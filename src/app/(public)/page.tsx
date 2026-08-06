@@ -120,11 +120,13 @@ export default function Home() {
                 loop
                 muted
                 playsInline
-                preload="metadata"
+                webkit-playsinline="true"
+                preload="auto"
                 disablePictureInPicture
                 className="absolute inset-0 w-full h-full object-cover"
               >
                 <source src="/video-proses-pirolisis.webm" type="video/webm" />
+                <source src="/video-proses-pirolisis.mp4" type="video/mp4" />
                 Browser Anda tidak mendukung tag video.
               </video>
             </div>
