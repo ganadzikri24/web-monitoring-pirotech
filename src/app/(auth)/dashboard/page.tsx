@@ -5,30 +5,40 @@ import RealtimeChart from "@/components/RealtimeChart";
 import BuzzerControl from "@/components/BuzzerControl";
 import ProcessTimer from "@/components/overview/ProcessTimer";
 import { useEffect, useState } from "react";
-import { getRunningBatch, mockLatestSnapshot } from "@/lib/mockData";
-import type { Batch, LatestSnapshot } from "@/lib/types";
+import { listenToMonitoring, MonitoringData } from "@/lib/firebaseUtils";
+import { getRunningBatch } from "@/lib/mockData";
+import type { Batch } from "@/lib/types";
 
 export default function DashboardPage() {
   const [runningBatch, setRunningBatch] = useState<Batch | null>(null);
-  const [snapshot, setSnapshot] = useState<LatestSnapshot | null>(null);
+  const [monitoringData, setMonitoringData] = useState<MonitoringData | null>(null);
 
   useEffect(() => {
-    const loadData = async () => {
-      if (process.env.NEXT_PUBLIC_USE_MOCK_AUTH === "true") {
-        const batch = await getRunningBatch();
-        setRunningBatch(batch);
-        setSnapshot(mockLatestSnapshot);
-      }
+    // We still keep the mock batch for the timer since Firebase RTDB 
+    // doesn't have the batch start time logic yet.
+    const loadBatch = async () => {
+      const batch = await getRunningBatch();
+      setRunningBatch(batch);
     };
-    loadData();
+    loadBatch();
     
-    const interval = setInterval(loadData, 5000);
-    return () => clearInterval(interval);
+    // Subscribe to Firebase RTDB for real telemetry
+    const unsubscribe = listenToMonitoring((data) => {
+      if (data) {
+        setMonitoringData(data);
+      }
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  const tempC = snapshot?.current?.tempC || 0;
+  const tempC = monitoringData?.suhu || 0;
   const isPaused = runningBatch?.status === "paused";
-  const status = isPaused ? "PAUSED" : (runningBatch ? "PYROLYSIS" : (snapshot?.current?.status || "IDLE"));
+  
+  // Use status from Firebase if available, otherwise fallback
+  const status = isPaused 
+    ? "PAUSED" 
+    : (monitoringData?.status?.toUpperCase() || (runningBatch ? "PYROLYSIS" : "IDLE"));
 
   // Determine status styles
   let statusBadge = "";

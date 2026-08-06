@@ -1,11 +1,31 @@
 "use client";
 
-import { Volume2, VolumeX, AlertTriangle } from "lucide-react";
-import { useState } from "react";
+import { Volume2, VolumeX, AlertTriangle, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { listenToBuzzer, setBuzzerState } from "@/lib/firebaseUtils";
 
 export default function BuzzerControl() {
   const [buzzer, setBuzzer] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = listenToBuzzer((isOn) => {
+      setBuzzer(isOn);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleToggle = async () => {
+    // Optimistic update
+    setBuzzer(!buzzer);
+    const success = await setBuzzerState(!buzzer);
+    if (!success) {
+      // Revert on failure
+      setBuzzer(buzzer);
+    }
+  };
 
   return (
     <div className="bg-card-bg p-6 lg:p-8 rounded-2xl shadow-sm border border-card-border h-full flex flex-col relative overflow-hidden">
@@ -23,7 +43,8 @@ export default function BuzzerControl() {
       
       <div className="flex-1 flex flex-col justify-center items-center py-6">
         <motion.button 
-          onClick={() => setBuzzer(!buzzer)}
+          onClick={handleToggle}
+          disabled={loading}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className={`relative w-40 h-40 rounded-full flex flex-col items-center justify-center gap-2 transition-colors shadow-lg cursor-pointer ${

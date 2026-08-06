@@ -9,27 +9,41 @@ export default function RealtimeChart() {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
+  const [chartData, setChartData] = useState<{ time: string; temp: number }[]>([]);
+
   useEffect(() => {
     setMounted(true);
+    
+    // Import helper dinamis di client-side (opsional, tapi bagus untuk menghindari error SSR dengan Firebase)
+    import('@/lib/firebaseUtils').then(({ listenToMonitoring }) => {
+      const unsubscribe = listenToMonitoring((data) => {
+        if (data && typeof data.suhu === 'number') {
+          const now = new Date();
+          const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+          
+          setChartData(prev => {
+            const newData = [...prev, { time: timeStr, temp: data.suhu }];
+            // Simpan maksimal 20 titik terakhir agar grafik tidak terlalu padat
+            if (newData.length > 20) {
+              return newData.slice(newData.length - 20);
+            }
+            return newData;
+          });
+        }
+      });
+      
+      // Cleanup
+      return () => unsubscribe();
+    });
   }, []);
 
   const isDark = mounted && resolvedTheme === "dark";
 
-  // Recharts needs explicit hex colors or rgba, var(--color) works but has issues in some SVGs
-  const strokeColor = isDark ? "#4ade80" : "#4D8942"; // brand-green
-  const gridColor = isDark ? "#1f2937" : "#EEF2EF"; // card-border equivalent
-  const textColor = isDark ? "#9ca3af" : "#687C63"; // brand-sage equivalent
+  const strokeColor = isDark ? "#4ade80" : "#4D8942";
+  const gridColor = isDark ? "#1f2937" : "#EEF2EF";
+  const textColor = isDark ? "#9ca3af" : "#687C63";
 
-  // TODO: hapus mock auth & mock data setelah Firebase disetup
-  const data = process.env.NEXT_PUBLIC_USE_MOCK_AUTH === 'true' 
-    ? mockChartData 
-    : [
-        { time: '10:00', temp: 200 },
-        { time: '10:05', temp: 250 },
-        { time: '10:10', temp: 300 },
-        { time: '10:15', temp: 320 },
-        { time: '10:20', temp: 325 },
-      ];
+  const data = chartData.length > 0 ? chartData : [{ time: 'Menunggu data...', temp: 0 }];
 
   if (!mounted) return <div className="w-full h-full animate-pulse bg-card-bg rounded-xl" />;
 
