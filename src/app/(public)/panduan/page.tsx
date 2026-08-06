@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 
 const fadeIn = {
-  initial: { opacity: 0, y: 20 },
+  initial: { opacity: 0, y: 30, willChange: "transform, opacity" },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, margin: "-40px" },
   transition: { duration: 0.5 },
@@ -37,6 +37,7 @@ export default function PanduanPage() {
               <img 
                 src="/panduan/penting.webp" 
                 alt="Larangan plastik metalized"
+                decoding="async"
                 className="w-full h-auto max-h-[400px] object-contain rounded-lg shadow-sm mx-auto bg-white dark:bg-card-bg"
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none';
@@ -104,6 +105,8 @@ export default function PanduanPage() {
               <img 
                 src="/panduan/skema.webp" 
                 alt="Skema Alat Pirolisis"
+                loading="lazy"
+                decoding="async"
                 className="absolute inset-0 w-full h-full object-contain z-10"
               />
               <div className="absolute inset-0 flex items-center justify-center text-brand-green/50 text-sm font-medium z-0">
@@ -145,6 +148,8 @@ export default function PanduanPage() {
               <img 
                 src="/panduan/aman.webp" 
                 alt="Ilustrasi Cara Pakai Aman"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-auto max-h-[600px] object-contain rounded-xl shadow-sm mx-auto bg-white dark:bg-card-bg"
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none';

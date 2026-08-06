@@ -64,7 +64,7 @@ export default function ProcessSteps() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{ delay: i * 0.1, duration: 0.5, ease: "easeOut" as const }}
-              className="relative"
+              className="relative transform-gpu"
             >
               {/* Desktop: Zigzag layout */}
               <div

@@ -88,8 +88,10 @@ export default function WasteInputForm({ weight, setWeight, type, setType, disab
                       {/* Image render */}
                       <img 
                         src={pt.image} 
-                        alt={pt.name} 
-                        className="absolute inset-0 w-full h-full object-cover z-10 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"
+                        alt={pt.name}
+                        loading="lazy"
+                        decoding="async" 
+                        className="absolute inset-0 w-full h-full object-cover z-10 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-transform duration-300 transform-gpu"
                       />
                       
                       {/* Fallback Icon */}

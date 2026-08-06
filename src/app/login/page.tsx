@@ -54,7 +54,9 @@ export default function LoginPage() {
 
         <div className="relative z-10 flex flex-col justify-center px-16 text-white">
           <div className="mb-8">
-            <Logo size="lg" className="brightness-0 invert" />
+            <Link href="/">
+              <Logo size="lg" className="brightness-0 invert" />
+            </Link>
           </div>
 
           <h2 className="text-4xl font-extrabold leading-tight mb-4 tracking-tight">

@@ -8,14 +8,11 @@ import {
   Gauge,
   Leaf,
   Recycle,
-  Zap,
   Banknote,
   Phone,
   Mail,
   MapPin,
   BookOpen,
-  Play,
-  Droplet,
 } from "lucide-react";
 
 import Product3DPreview from "@/components/landing/Product3DPreview";
@@ -23,10 +20,7 @@ import WasteToFuelAnimation from "@/components/landing/WasteToFuelAnimation";
 import ProcessSteps from "@/components/landing/ProcessSteps";
 import AnimatedCounter from "@/components/landing/AnimatedCounter";
 import ImplementationGallery from "@/components/landing/ImplementationGallery";
-import WasteInputForm from "@/components/WasteInputForm";
-import EstimationCard from "@/components/EstimationCard";
-import { useState } from "react";
-import { calculateEstimatedYield } from "@/lib/calculations";
+import CalculatorSection from "@/components/landing/CalculatorSection";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 30 },
@@ -67,13 +61,6 @@ const FEATURES = [
 ];
 
 export default function Home() {
-  // Shared state for public calculator
-  const [weight, setWeight] = useState("");
-  const [type, setType] = useState("");
-
-  const numericWeight = parseFloat(weight) || 0;
-  const { fuelLiters, residueKg, yieldRate } = calculateEstimatedYield(numericWeight, type);
-
   return (
     <div className="flex flex-col">
       {/* ═══════ 1. HERO ═══════ */}
@@ -133,6 +120,8 @@ export default function Home() {
                 loop
                 muted
                 playsInline
+                preload="metadata"
+                disablePictureInPicture
                 className="absolute inset-0 w-full h-full object-cover"
               >
                 <source src="/video-proses-pirolisis.webm" type="video/webm" />
@@ -222,7 +211,7 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1, duration: 0.5 }}
-                className="bg-white/10 backdrop-blur rounded-2xl p-6 border border-white/10 text-center"
+                className="bg-white/10 rounded-2xl p-6 border border-white/10 text-center transform-gpu"
               >
                 <div className="text-4xl md:text-5xl font-extrabold text-white mb-2">
                   <AnimatedCounter target={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
@@ -235,35 +224,7 @@ export default function Home() {
 
           {/* Interactive Calculator */}
           <motion.div {...fadeInUp}>
-            <div className="bg-white/10 backdrop-blur-md rounded-3xl p-6 md:p-10 border border-white/20">
-              <div className="flex items-center gap-3 mb-8">
-                <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
-                  <Droplet className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <h3 className="text-xl font-bold text-white">Kalkulator Estimasi BBM</h3>
-                  <p className="text-white/60 text-sm">Masukkan berat dan jenis plastik untuk melihat perkiraan hasil</p>
-                </div>
-              </div>
-
-              <div className="grid lg:grid-cols-12 gap-8">
-                <div className="lg:col-span-5">
-                  <WasteInputForm
-                    weight={weight}
-                    setWeight={setWeight}
-                    type={type}
-                    setType={setType}
-                  />
-                </div>
-                <div className="lg:col-span-7">
-                  <EstimationCard
-                    fuelLiters={fuelLiters}
-                    residueKg={residueKg}
-                    yieldRate={yieldRate}
-                  />
-                </div>
-              </div>
-            </div>
+            <CalculatorSection />
           </motion.div>
         </div>
       </section>
@@ -298,7 +259,7 @@ export default function Home() {
                     y: -8,
                     transition: { duration: 0.2 },
                   }}
-                  className="bg-card-bg rounded-2xl p-7 border border-card-border shadow-sm hover:shadow-xl transition-all duration-300 text-center group"
+                  className="bg-card-bg rounded-2xl p-7 border border-card-border shadow-sm hover:shadow-xl transition-shadow duration-300 text-center group"
                 >
                   <motion.div
                     className={`w-14 h-14 rounded-xl ${feat.bg} flex items-center justify-center mx-auto mb-5`}

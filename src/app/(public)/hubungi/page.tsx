@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Mail, Send, MapPin, Phone } from "lucide-react";
 
 const fadeIn = {
-  initial: { opacity: 0, y: 20 },
+  initial: { opacity: 0, y: 30, willChange: "transform, opacity" },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true },
   transition: { duration: 0.5 },

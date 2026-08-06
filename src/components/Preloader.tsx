@@ -51,14 +51,14 @@ export default function Preloader({ onFinished }: PreloaderProps) {
             {/* Loading bar */}
             <div className="w-48 h-1.5 bg-card-border/50 rounded-full overflow-hidden relative shadow-inner">
               <motion.div
-                initial={{ width: "0%", x: "-100%" }}
-                animate={{ width: "50%", x: "200%" }}
+                initial={{ scaleX: 0, x: "-100%" }}
+                animate={{ scaleX: 0.5, x: "200%" }}
                 transition={{ 
                   duration: 1.5, 
                   ease: "easeInOut",
                   repeat: Infinity
                 }}
-                className="absolute inset-y-0 left-0 h-full bg-brand-green rounded-full shadow-[0_0_10px_rgba(22,163,74,0.7)]"
+                className="absolute inset-y-0 left-0 h-full w-full bg-brand-green rounded-full shadow-[0_0_10px_rgba(22,163,74,0.7)] origin-left"
               />
             </div>
           </motion.div>

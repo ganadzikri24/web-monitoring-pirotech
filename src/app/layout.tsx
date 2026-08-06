@@ -15,6 +15,9 @@ export const metadata: Metadata = {
   description:
     "Pemantauan dan pengendalian proses pirolisis plastik menjadi bahan bakar cair secara real-time berbasis IoT. Dikembangkan oleh Sekolah Vokasi IPB.",
   keywords: ["pirolisis", "plastik", "bahan bakar cair", "IoT", "monitoring", "PiRoTech", "IPB"],
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({

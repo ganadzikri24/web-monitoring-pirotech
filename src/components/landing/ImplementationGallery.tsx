@@ -30,18 +30,19 @@ export default function ImplementationGallery() {
             transition={{ delay: i * 0.08, duration: 0.4 }}
             whileHover={{ y: -4, transition: { duration: 0.2 } }}
             onClick={() => setSelectedId(item.id)}
-            className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-card-bg border border-card-border shadow-sm group cursor-pointer"
+            className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-card-bg border border-card-border shadow-sm group cursor-pointer transform-gpu"
           >
             <img 
               src={item.src} 
               alt={item.alt} 
               className="absolute inset-0 w-full h-full object-cover z-10"
               loading="lazy"
+              decoding="async"
             />
 
             {/* Hover overlay */}
-            <div className="absolute inset-0 bg-brand-green700/0 group-hover:bg-brand-green700/30 transition-colors duration-300 flex items-center justify-center">
-              <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300 drop-shadow-lg" />
+            <div className="absolute inset-0 bg-brand-green700/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center transform-gpu will-change-[opacity]">
+              <ZoomIn className="w-8 h-8 text-white drop-shadow-lg" />
             </div>
           </motion.button>
         ))}
@@ -54,7 +55,7 @@ export default function ImplementationGallery() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-6"
+            className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-6"
             onClick={() => setSelectedId(null)}
           >
             <motion.div
@@ -68,6 +69,8 @@ export default function ImplementationGallery() {
               <img 
                 src={selected.src} 
                 alt={selected.alt} 
+                loading="lazy"
+                decoding="async"
                 className="absolute inset-0 w-full h-full object-contain bg-black/10 z-0"
               />
 

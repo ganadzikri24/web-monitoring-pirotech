@@ -12,6 +12,8 @@ export default function PyrolysisProcessAnimation() {
           loop
           muted
           playsInline
+          preload="auto"
+          disablePictureInPicture
           className="w-full h-full object-cover"
         >
           <source src={videoSrc} type="video/webm" />

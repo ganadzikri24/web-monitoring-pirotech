@@ -22,8 +22,8 @@ export default function Footer() {
               <Logo size="sm" />
               <div className="hidden sm:block h-8 w-px bg-card-border" />
               <div className="flex items-center gap-4">
-                <img src="/logo-sv.png" alt="Logo SV IPB" className="h-10 w-auto object-contain" />
-                <img src="/logo-tekom.png" alt="Logo Tekom" className="h-10 w-auto object-contain" />
+                <img src="/logo-sv.png" alt="Logo SV IPB" loading="lazy" decoding="async" className="h-10 w-auto object-contain" />
+                <img src="/logo-tekom.png" alt="Logo Tekom" loading="lazy" decoding="async" className="h-10 w-auto object-contain" />
               </div>
             </div>
             <p className="text-brand-sage text-sm leading-relaxed">

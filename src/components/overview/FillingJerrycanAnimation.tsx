@@ -29,7 +29,7 @@ function SingleBottle({ fillPercent, color = "#facc15" }: FillingJerrycanAnimati
             animate={{ height: `${clampedPercent}%` }}
             transition={{ type: "spring", stiffness: 80, damping: 15 }}
             className="absolute bottom-0 left-0 right-0 w-full origin-bottom"
-            style={{ backgroundColor: color }}
+            style={{ backgroundColor: color, willChange: "height" }}
           >
             {/* Wave */}
             <motion.div
