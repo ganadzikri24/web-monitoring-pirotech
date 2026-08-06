@@ -1,26 +1,125 @@
 @import "tailwindcss";
 
+/* ── Light Mode (default) ── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #F1F5F0;
+  --foreground: #1a2e1a;
+  --card-bg: #ffffff;
+  --card-border: #EEF2EF;
+  --muted: #687C63;
+  --muted-foreground: #8a9b86;
+
+  --brand-green: #4D8942;
+  --brand-sage: #687C63;
+  --brand-green50: #E9F3E7;
+  --brand-green700: #3E6E36;
+  --brand-sage50: #EEF2EF;
+  --brand-tan: #CFBB99;
+  --brand-bone: #E5D7C4;
+  --app-bg: #F1F5F0;
+
+  --nav-bg: rgba(255, 255, 255, 0.8);
+  --nav-bg-solid: #ffffff;
+  --nav-border: #EEF2EF;
+
+  --input-bg: #F1F5F0;
+  --input-border: #EEF2EF;
+}
+
+/* ── Dark Mode ── */
+.dark {
+  --background: #0f1a0f;
+  --foreground: #e4ebe3;
+  --card-bg: #1a2b1a;
+  --card-border: #2a3d2a;
+  --muted: #8a9b86;
+  --muted-foreground: #687C63;
+
+  --brand-green: #5fa852;
+  --brand-sage: #8a9b86;
+  --brand-green50: #1a2b1a;
+  --brand-green700: #7bc46e;
+  --brand-sage50: #243024;
+  --brand-tan: #a8956e;
+  --brand-bone: #8a7d6a;
+  --app-bg: #0f1a0f;
+
+  --nav-bg: rgba(15, 26, 15, 0.8);
+  --nav-bg-solid: #1a2b1a;
+  --nav-border: #2a3d2a;
+
+  --input-bg: #1a2b1a;
+  --input-border: #2a3d2a;
 }
 
 @theme inline {
+  --color-brand-green: var(--brand-green);
+  --color-brand-sage: var(--brand-sage);
+  --color-brand-green50: var(--brand-green50);
+  --color-brand-green700: var(--brand-green700);
+  --color-brand-sage50: var(--brand-sage50);
+  --color-brand-tan: var(--brand-tan);
+  --color-brand-bone: var(--brand-bone);
+  --color-app-bg: var(--app-bg);
+
+  --color-card-bg: var(--card-bg);
+  --color-card-border: var(--card-border);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-nav-bg: var(--nav-bg);
+  --color-nav-bg-solid: var(--nav-bg-solid);
+  --color-nav-border: var(--nav-border);
+  --color-input-bg: var(--input-bg);
+  --color-input-border: var(--input-border);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-jakarta);
+  --font-mono: var(--font-jakarta-mono, monospace);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* ── Base Styles ── */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-jakarta), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Smooth transitions for theme switching ── */
+*,
+*::before,
+*::after {
+  transition-property: background-color, border-color, color;
+  transition-duration: 200ms;
+  transition-timing-function: ease-in-out;
+}
+
+/* Disable transitions on page load to avoid flash */
+.no-transitions *,
+.no-transitions *::before,
+.no-transitions *::after {
+  transition: none !important;
+}
+
+/* ── Scrollbar Styling ── */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--app-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--brand-sage);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand-green);
+}
+
+/* ── Selection ── */
+::selection {
+  background: var(--brand-green);
+  color: white;
 }

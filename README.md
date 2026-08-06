@@ -1,36 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PiRoTech - Monitoring Alat Pirolisis
 
-## Getting Started
+Aplikasi web Next.js untuk monitoring dan pengendalian alat pirolisis sampah plastik menjadi bahan bakar cair secara real-time.
 
-First, run the development server:
+## Cara Setup Environment
+
+1. Salin file `.env.local.example` menjadi `.env.local`.
+   ```bash
+   cp .env.local.example .env.local
+   ```
+2. Isi nilai-nilai konfigurasi di dalam `.env.local` dengan kredensial dari project Firebase Anda (lihat di Project Settings > General > Your apps).
+
+## Cara Menjalankan Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Setup Firebase Admin (Tools)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Untuk mengatur pengguna menjadi Admin (agar dapat mengkonfigurasi threshold dan aktuator):
+1. Masuk ke Firebase Console > Project Settings > Service Accounts.
+2. Generate new private key, lalu simpan file JSON tersebut dengan nama `service-account.json` ke dalam folder `tools/`.
+3. Jalankan script CLI untuk memberikan akses Admin ke suatu UID:
+   ```bash
+   node tools/set-admin.js <UID_PENGGUNA>
+   ```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deploy Cloud Functions
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Cloud Function digunakan untuk mengirim notifikasi push (FCM) secara otomatis saat proses pirolisis baru (batch) dimulai.
+Untuk men-deploy:
+```bash
+cd functions
+npm install
+npm run deploy
+```

@@ -1,0 +1,56 @@
+{
+  "rules": {
+    "pirotech": {
+      "latest": {
+        ".read": true,
+        ".write": "auth != null && auth.token.iot === true"
+      },
+      "readings": {
+        ".read": true,
+        ".write": "auth != null && auth.token.iot === true"
+      },
+      "batches": {
+        ".read": true,
+        ".write": "auth != null && (auth.token.role === 'admin' || auth.token.iot === true)"
+      },
+      "events": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "commands": {
+        ".read": true,
+        ".write": "auth != null && (auth.token.role === 'admin' || auth.token.role === 'operator')"
+      },
+      "config": {
+        ".read": true,
+        ".write": "auth != null && auth.token.role === 'admin'"
+      },
+      "controls": {
+        ".read": true,
+        ".write": "auth != null && auth.token.role === 'admin'"
+      },
+      "thresholds": {
+        ".read": true,
+        ".write": "auth != null && auth.token.role === 'admin'"
+      },
+      "maintenance": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.token.role === 'admin'"
+      },
+      "controlLog": {
+        ".read": "auth != null && auth.token.role === 'admin'",
+        ".write": "auth != null && auth.token.role === 'admin'"
+      },
+      "notifications": {
+        ".read": "auth != null && auth.token.role === 'admin'",
+        ".write": "auth != null && auth.token.role === 'admin'"
+      }
+    },
+    "contact": {
+      "messages": {
+        ".read": "auth != null && auth.token.role === 'admin'",
+        ".write": true
+      }
+    }
+  }
+}
