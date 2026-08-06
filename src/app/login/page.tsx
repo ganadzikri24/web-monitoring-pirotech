@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Lock, ArrowLeft, Eye, EyeOff, Recycle } from "lucide-react";
+import { Lock, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import Logo from "@/components/Logo";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -52,11 +53,8 @@ export default function LoginPage() {
         </div>
 
         <div className="relative z-10 flex flex-col justify-center px-16 text-white">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center">
-              <Recycle className="w-6 h-6" />
-            </div>
-            <span className="text-3xl font-bold tracking-tight">PiRoTech</span>
+          <div className="mb-8">
+            <Logo size="lg" className="brightness-0 invert" />
           </div>
 
           <h2 className="text-4xl font-extrabold leading-tight mb-4 tracking-tight">
@@ -89,30 +87,21 @@ export default function LoginPage() {
 
       {/* Right side — Form */}
       <div className="flex-1 flex flex-col justify-center px-6 py-12 lg:px-16 relative">
-        <div className="absolute top-6 left-6 z-20 lg:hidden">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-brand-green700 dark:text-white/80 hover:text-brand-green transition-colors font-medium text-sm"
-          >
-            <ArrowLeft className="w-4 h-4" /> Kembali
-          </Link>
-        </div>
-
-        <div className="absolute top-6 left-6 z-20 hidden lg:block">
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-brand-green700 dark:text-white/80 hover:text-brand-green transition-colors font-medium text-sm"
-          >
-            <ArrowLeft className="w-4 h-4" /> Kembali ke Beranda
-          </Link>
-        </div>
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="max-w-md w-full mx-auto"
         >
+          {/* Back Button */}
+          <div className="flex justify-center mb-8">
+            <Link
+              href="/"
+              className="inline-flex items-center justify-center gap-2 text-brand-green hover:text-brand-green700 transition-colors font-bold text-sm bg-brand-green50/50 hover:bg-brand-green50 px-5 py-2.5 rounded-full border border-brand-green/20 shadow-sm"
+            >
+              <ArrowLeft className="w-4 h-4" /> Kembali ke Web Utama
+            </Link>
+          </div>
           <div className="text-center mb-10">
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-brand-green50 text-brand-green mb-6 shadow-sm">
               <Lock className="w-8 h-8" />

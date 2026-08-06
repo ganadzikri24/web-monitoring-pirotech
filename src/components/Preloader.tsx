@@ -35,7 +35,6 @@ export default function Preloader({ onFinished }: PreloaderProps) {
             transition={{ duration: 0.6, ease: "easeOut" as const }}
             className="flex flex-col items-center gap-6"
           >
-            {/* Logo with pulse */}
             <motion.div
               animate={{
                 scale: [1, 1.05, 1],
@@ -46,30 +45,20 @@ export default function Preloader({ onFinished }: PreloaderProps) {
                 ease: "easeInOut",
               }}
             >
-              <Logo variant="icon" size="lg" />
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.4 }}
-              className="text-center"
-            >
-              <h1 className="text-2xl font-bold text-brand-green700 tracking-tight">
-                PiRoTech
-              </h1>
-              <p className="text-sm text-brand-sage mt-1">
-                Alat Pirolisis Sampah Plastik
-              </p>
+              <Logo size="lg" />
             </motion.div>
 
             {/* Loading bar */}
-            <div className="w-48 h-1 bg-card-border rounded-full overflow-hidden">
+            <div className="w-48 h-1.5 bg-card-border/50 rounded-full overflow-hidden relative shadow-inner">
               <motion.div
-                initial={{ width: "0%" }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 1.3, ease: "easeInOut" }}
-                className="h-full bg-brand-green rounded-full"
+                initial={{ width: "0%", x: "-100%" }}
+                animate={{ width: "50%", x: "200%" }}
+                transition={{ 
+                  duration: 1.5, 
+                  ease: "easeInOut",
+                  repeat: Infinity
+                }}
+                className="absolute inset-y-0 left-0 h-full bg-brand-green rounded-full shadow-[0_0_10px_rgba(22,163,74,0.7)]"
               />
             </div>
           </motion.div>

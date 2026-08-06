@@ -7,14 +7,14 @@ interface FillingJerrycanAnimationProps {
   color?: string;
 }
 
-function SingleBottle({ fillPercent, color = "#B45309" }: FillingJerrycanAnimationProps) {
+function SingleBottle({ fillPercent, color = "#facc15" }: FillingJerrycanAnimationProps) {
   const clampedPercent = Math.max(5, Math.min(100, fillPercent));
   const empty = fillPercent <= 0 || isNaN(fillPercent);
 
   return (
     <div className="w-16 h-24 relative flex items-end justify-center shrink-0">
       {/* Container back */}
-      <svg viewBox="0 0 100 140" className="absolute inset-0 w-full h-full text-brand-sage/20 dark:text-brand-sage/10">
+      <svg viewBox="0 0 100 140" className="absolute inset-0 w-full h-full text-brand-sage/30 dark:text-brand-sage/20">
         <path
           d="M20,30 L30,30 L30,10 C30,4 34,0 40,0 L60,0 C66,0 70,4 70,10 L70,30 L80,30 C91,30 100,39 100,50 L100,120 C100,131 91,140 80,140 L20,140 C9,140 0,131 0,120 L0,50 C0,39 9,30 20,30 Z M40,30 L60,30 L60,15 L40,15 L40,30 Z M15,50 L15,120 C15,123 17,125 20,125 L80,125 C83,125 85,123 85,120 L85,50 C85,47 83,45 80,45 L20,45 C17,45 15,47 15,50 Z"
           fill="currentColor"
@@ -43,12 +43,12 @@ function SingleBottle({ fillPercent, color = "#B45309" }: FillingJerrycanAnimati
       )}
 
       {/* Container front outline */}
-      <svg viewBox="0 0 100 140" className="absolute inset-0 w-full h-full text-brand-sage dark:text-brand-sage/60">
+      <svg viewBox="0 0 100 140" className="absolute inset-0 w-full h-full text-gray-900 dark:text-white">
         <path
           d="M20,30 L30,30 L30,10 C30,4 34,0 40,0 L60,0 C66,0 70,4 70,10 L70,30 L80,30 C91,30 100,39 100,50 L100,120 C100,131 91,140 80,140 L20,140 C9,140 0,131 0,120 L0,50 C0,39 9,30 20,30 Z M40,30 L60,30 L60,15 L40,15 L40,30 Z M15,50 L15,120 C15,123 17,125 20,125 L80,125 C83,125 85,123 85,120 L85,50 C85,47 83,45 80,45 L20,45 C17,45 15,47 15,50 Z"
           fill="none"
           stroke="currentColor"
-          strokeWidth="3"
+          strokeWidth="10"
         />
       </svg>
     </div>
@@ -64,7 +64,7 @@ interface MultiBottleProps {
 export default function FillingJerrycanAnimation({
   totalLiters,
   bottleCapacity = 5,
-  color = "#B45309",
+  color = "#facc15",
 }: MultiBottleProps) {
   if (totalLiters <= 0 || isNaN(totalLiters)) {
     return (

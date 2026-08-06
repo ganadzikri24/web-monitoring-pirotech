@@ -6,12 +6,12 @@ import { X, ZoomIn } from "lucide-react";
 
 // TODO: ganti dengan foto asli implementasi dari saya
 const GALLERY_ITEMS = [
-  { id: 1, src: "/gallery/impl-1.jpg", alt: "Implementasi alat pirolisis di masyarakat" },
-  { id: 2, src: "/gallery/impl-2.jpg", alt: "Proses pengolahan sampah plastik" },
-  { id: 3, src: "/gallery/impl-3.jpg", alt: "Hasil minyak pirolisis" },
-  { id: 4, src: "/gallery/impl-4.jpg", alt: "Tim PiRoTech di lapangan" },
-  { id: 5, src: "/gallery/impl-5.jpg", alt: "Alat pirolisis tampak samping" },
-  { id: 6, src: "/gallery/impl-6.jpg", alt: "Pelatihan penggunaan alat" },
+  { id: 1, src: "/gallery/impl-1.webp", alt: "Implementasi alat pirolisis di masyarakat" },
+  { id: 2, src: "/gallery/impl-2.webp", alt: "Proses pengolahan sampah plastik" },
+  { id: 3, src: "/gallery/impl-3.webp", alt: "Hasil minyak pirolisis" },
+  { id: 4, src: "/gallery/impl-4.webp", alt: "Tim PiRoTech di lapangan" },
+  { id: 5, src: "/gallery/impl-5.webp", alt: "Alat pirolisis tampak samping" },
+  { id: 6, src: "/gallery/impl-6.webp", alt: "Pelatihan penggunaan alat" },
 ];
 
 export default function ImplementationGallery() {
@@ -32,17 +32,12 @@ export default function ImplementationGallery() {
             onClick={() => setSelectedId(item.id)}
             className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-card-bg border border-card-border shadow-sm group cursor-pointer"
           >
-            {/* TODO: ganti placeholder ini dengan <Image src={item.src} /> setelah foto tersedia */}
-            <div className="absolute inset-0 bg-gradient-to-br from-brand-green50 via-brand-sage50/30 to-card-bg flex items-center justify-center">
-              <div className="text-center space-y-2">
-                <div className="w-10 h-10 rounded-xl bg-brand-green/10 mx-auto flex items-center justify-center">
-                  <ZoomIn className="w-5 h-5 text-brand-green" />
-                </div>
-                <p className="text-[11px] text-brand-sage font-medium px-2">
-                  {item.alt}
-                </p>
-              </div>
-            </div>
+            <img 
+              src={item.src} 
+              alt={item.alt} 
+              className="absolute inset-0 w-full h-full object-cover z-10"
+              loading="lazy"
+            />
 
             {/* Hover overlay */}
             <div className="absolute inset-0 bg-brand-green700/0 group-hover:bg-brand-green700/30 transition-colors duration-300 flex items-center justify-center">
@@ -70,16 +65,11 @@ export default function ImplementationGallery() {
               className="relative max-w-3xl w-full aspect-[4/3] rounded-2xl overflow-hidden bg-card-bg border border-card-border shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* TODO: ganti placeholder ini dengan <Image src={selected.src} /> */}
-              <div className="absolute inset-0 bg-gradient-to-br from-brand-green50 via-brand-sage50/30 to-card-bg flex items-center justify-center">
-                <div className="text-center space-y-3">
-                  <div className="w-16 h-16 mx-auto rounded-2xl bg-brand-green/10 flex items-center justify-center">
-                    <ZoomIn className="w-8 h-8 text-brand-green" />
-                  </div>
-                  <p className="text-sm text-brand-sage font-medium">{selected.alt}</p>
-                  <p className="text-xs text-brand-sage/60">Foto akan ditambahkan</p>
-                </div>
-              </div>
+              <img 
+                src={selected.src} 
+                alt={selected.alt} 
+                className="absolute inset-0 w-full h-full object-contain bg-black/10 z-0"
+              />
 
               <button
                 onClick={() => setSelectedId(null)}

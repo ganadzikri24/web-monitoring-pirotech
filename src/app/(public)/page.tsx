@@ -128,21 +128,16 @@ export default function Home() {
           <motion.div {...fadeInUp}>
             {/* Video player slot */}
             <div className="relative aspect-video rounded-2xl overflow-hidden bg-brand-green50 border border-card-border shadow-lg group">
-              {/* TODO: ganti src video penjelasan alat dari saya */}
-              <div className="absolute inset-0 bg-gradient-to-br from-brand-green50 via-brand-sage50/50 to-card-bg flex items-center justify-center">
-                <div className="text-center space-y-4">
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    className="w-16 h-16 mx-auto rounded-full bg-brand-green/90 text-white flex items-center justify-center shadow-lg cursor-pointer hover:bg-brand-green700 transition-colors"
-                  >
-                    <Play className="w-7 h-7 ml-0.5" />
-                  </motion.button>
-                  <p className="text-sm text-brand-sage font-medium">
-                    Video penjelasan alat
-                  </p>
-                </div>
-              </div>
+              <video 
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="absolute inset-0 w-full h-full object-cover"
+              >
+                <source src="/video-proses-pirolisis.webm" type="video/webm" />
+                Browser Anda tidak mendukung tag video.
+              </video>
             </div>
           </motion.div>
 

@@ -13,12 +13,12 @@ interface WasteInputFormProps {
 }
 
 const PLASTIC_TYPES = [
-  { id: "1", name: "PET", desc: "Botol Minum", image: "/plastics/pet.jpg" },
-  { id: "2", name: "HDPE", desc: "Botol Susu", image: "/plastics/hdpe.jpg" },
-  { id: "4", name: "LDPE", desc: "Kantong Plastik", image: "/plastics/ldpe.jpg" },
-  { id: "5", name: "PP", desc: "Tutup Botol", image: "/plastics/pp.jpg" },
-  { id: "6", name: "PS", desc: "Styrofoam", image: "/plastics/ps.jpg" },
-  { id: "mix", name: "Campuran", desc: "Mixed Waste", image: "/plastics/mix.jpg" },
+  { id: "1", name: "PET", desc: "Botol Minum", image: "/plastics/pet.webp" },
+  { id: "2", name: "HDPE", desc: "Botol Susu", image: "/plastics/hdpe.webp" },
+  { id: "4", name: "LDPE", desc: "Kantong Plastik", image: "/plastics/ldpe.webp" },
+  { id: "5", name: "PP", desc: "Tutup Botol", image: "/plastics/pp.webp" },
+  { id: "6", name: "PS", desc: "Styrofoam", image: "/plastics/ps.webp" },
+  { id: "mix", name: "Campuran", desc: "Mixed Waste", image: "/plastics/mix.webp" },
 ];
 
 export default function WasteInputForm({ weight, setWeight, type, setType, disabled = false }: WasteInputFormProps) {
@@ -82,13 +82,19 @@ export default function WasteInputForm({ weight, setWeight, type, setType, disab
                       </div>
                     )}
 
-                    {/* TODO: ganti dengan foto asli jenis plastik */}
                     <div className="w-full aspect-[4/3] rounded-lg mb-2 relative overflow-hidden bg-card-bg flex items-center justify-center border border-card-border/50 group-hover:border-brand-green/20 transition-colors">
                       <div className="absolute inset-0 bg-gradient-to-br from-transparent to-black/5 z-0" />
-                      <PlasticTypeIcon typeId={pt.id} className="w-8 h-8 relative z-10 opacity-70 group-hover:scale-110 transition-transform" />
                       
-                      <div className="absolute bottom-1 right-1 text-[8px] text-brand-sage/40 bg-app-bg/50 px-1 rounded backdrop-blur-sm z-10">
-                        Foto blm ada
+                      {/* Image render */}
+                      <img 
+                        src={pt.image} 
+                        alt={pt.name} 
+                        className="absolute inset-0 w-full h-full object-cover z-10 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"
+                      />
+                      
+                      {/* Fallback Icon */}
+                      <div className="absolute opacity-0">
+                        <PlasticTypeIcon typeId={pt.id} className="w-8 h-8" />
                       </div>
                     </div>
                     

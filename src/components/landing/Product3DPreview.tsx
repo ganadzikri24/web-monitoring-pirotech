@@ -14,7 +14,7 @@ export default function Product3DPreview() {
         playsInline
         className="absolute inset-0 w-full h-full object-cover"
       >
-        <source src="/video-3d-pirotech.WEBM" type="video/webm" />
+        <source src="/video-3d-pirotech.webm" type="video/webm" />
         Video Anda tidak didukung oleh browser.
       </video>
 

@@ -78,7 +78,7 @@ export default function Sidebar() {
             if (process.env.NEXT_PUBLIC_USE_MOCK_AUTH === "true") {
               const { clearMockSession } = await import("@/lib/mockAuth");
               clearMockSession();
-              window.location.href = "/login";
+              window.location.href = "/";
               return;
             }
 

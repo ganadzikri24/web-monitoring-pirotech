@@ -8,42 +8,42 @@ const STEPS = [
     title: "Sortir & Bersihkan",
     desc: "Pilah sampah plastik sesuai jenis (PET, HDPE, PP, dll.). Bersihkan dari sisa makanan atau kotoran, lalu keringkan. Hindari plastik berlapis aluminium.",
     // TODO: ganti foto tahap Sortir & Bersihkan
-    image: "/public/steps/step-sortir.webp",
+    image: "/steps/step-sortir.webp",
   },
   {
     step: 2,
     title: "Masukkan ke Reaktor",
     desc: "Masukkan plastik yang sudah bersih dan kering ke dalam reaktor utama hingga batas aman kapasitas. Jangan melebihi kapasitas maksimal.",
     // TODO: ganti foto tahap Masukkan ke Reaktor
-    image: "/steps/step-masukkan.jpg",
+    image: "/steps/step-masukkan.webp",
   },
   {
     step: 3,
     title: "Tutup & Kunci Reaktor",
     desc: "Pasang tutup kerucut dan kunci dengan klem pengunci hingga kedap udara. Pastikan semua sambungan pipa rapat dan tidak bocor.",
     // TODO: ganti foto tahap Tutup & Kunci
-    image: "/steps/step-tutup.jpg",
+    image: "/steps/step-tutup.webp",
   },
   {
     step: 4,
     title: "Panaskan Bertahap",
     desc: "Nyalakan sumber pemanas (kompor) dan naikkan suhu secara bertahap. Proses pirolisis optimal terjadi pada suhu 300–450°C tanpa oksigen.",
     // TODO: ganti foto tahap Panaskan
-    image: "/steps/step-panaskan.jpg",
+    image: "/steps/step-panaskan.webp",
   },
   {
     step: 5,
     title: "Kondensasi Uap",
     desc: "Uap yang dihasilkan mengalir melalui pipa ke kondensor, di mana uap didinginkan dan berubah menjadi cairan bahan bakar (minyak pirolisis).",
     // TODO: ganti foto tahap Kondensasi
-    image: "/steps/step-kondensasi.jpg",
+    image: "/steps/step-kondensasi.webp",
   },
   {
     step: 6,
     title: "Tampung Hasil BBM",
     desc: "Minyak pirolisis cair keluar dari ujung kondensor dan ditampung di wadah. Hasilnya adalah bahan bakar cair setara solar yang siap digunakan.",
     // TODO: ganti foto tahap Tampung Hasil
-    image: "/steps/step-hasil.jpg",
+    image: "/steps/step-hasil.webp",
   },
 ];
 
@@ -78,16 +78,11 @@ export default function ProcessSteps() {
                   <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-card-bg border border-card-border shadow-sm group">
                     {/* TODO: ganti dengan foto asli tahap ini */}
                     <div className="absolute inset-0 bg-gradient-to-br from-brand-green50 via-brand-sage50/50 to-card-bg flex items-center justify-center">
-                      <div className="text-center space-y-2">
-                        <div className="w-16 h-16 mx-auto rounded-2xl bg-brand-green/10 flex items-center justify-center">
-                          <span className="text-3xl font-extrabold text-brand-green">
-                            {step.step}
-                          </span>
-                        </div>
-                        <p className="text-xs text-brand-sage font-medium">
-                          Foto akan ditambahkan
-                        </p>
-                      </div>
+                      <img 
+                        src={step.image} 
+                        alt={step.title} 
+                        className="absolute inset-0 w-full h-full object-cover z-10"
+                      />
                     </div>
                     <div className="absolute inset-0 ring-1 ring-inset ring-brand-green/0 group-hover:ring-brand-green/20 transition-all duration-300 rounded-2xl" />
                   </div>

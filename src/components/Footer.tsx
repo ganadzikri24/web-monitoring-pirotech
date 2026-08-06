@@ -18,8 +18,13 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-8">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <div className="flex items-center gap-2.5 mb-4">
-              <Logo size="md" />
+            <div className="flex items-center flex-wrap gap-4 mb-6">
+              <Logo size="sm" />
+              <div className="hidden sm:block h-8 w-px bg-card-border" />
+              <div className="flex items-center gap-4">
+                <img src="/logo-sv.png" alt="Logo SV IPB" className="h-10 w-auto object-contain" />
+                <img src="/logo-tekom.png" alt="Logo Tekom" className="h-10 w-auto object-contain" />
+              </div>
             </div>
             <p className="text-brand-sage text-sm leading-relaxed">
               Monitoring alat pengolah sampah plastik menjadi bahan bakar cair menggunakan teknologi pirolisis berbasis IoT.
