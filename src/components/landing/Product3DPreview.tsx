@@ -63,8 +63,8 @@ export default function Product3DPreview() {
         className="absolute inset-0 w-full h-full object-cover"
         onPlay={() => { setIsPlaying(true); setShowPlayButton(false); }}
       >
-        <source src="/video-3d-pirotech.webm" type="video/webm" />
         <source src="/video-3d-pirotech.mp4" type="video/mp4" />
+        <source src="/video-3d-pirotech.webm" type="video/webm" />
         Video Anda tidak didukung oleh browser.
       </video>
 

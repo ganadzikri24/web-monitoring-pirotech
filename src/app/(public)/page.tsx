@@ -125,8 +125,8 @@ export default function Home() {
                 disablePictureInPicture
                 className="absolute inset-0 w-full h-full object-cover"
               >
-                <source src="/video-proses-pirolisis.webm" type="video/webm" />
                 <source src="/video-proses-pirolisis.mp4" type="video/mp4" />
+                <source src="/video-proses-pirolisis.webm" type="video/webm" />
                 Browser Anda tidak mendukung tag video.
               </video>
             </div>

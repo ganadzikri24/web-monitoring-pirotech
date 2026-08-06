@@ -17,8 +17,8 @@ export default function PyrolysisProcessAnimation() {
           disablePictureInPicture
           className="w-full h-full object-cover"
         >
-          <source src={videoSrc} type="video/webm" />
           <source src="/video-proses-pirolisis.mp4" type="video/mp4" />
+          <source src={videoSrc} type="video/webm" />
         </video>
       </div>
     );
