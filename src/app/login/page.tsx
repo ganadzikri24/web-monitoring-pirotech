@@ -137,7 +137,7 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@pirotech.id"
+                  placeholder="email@perusahaan.com"
                   className="w-full px-4 py-3.5 rounded-xl border border-input-border bg-input-bg text-foreground focus:outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green transition-all placeholder:text-muted-foreground"
                 />
               </div>
