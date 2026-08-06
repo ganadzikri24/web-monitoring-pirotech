@@ -123,5 +123,6 @@ export default function Sidebar({ isOpen = false, setIsOpen = (o: boolean) => {}
         </button>
       </div>
     </aside>
+    </>
   );
 }
