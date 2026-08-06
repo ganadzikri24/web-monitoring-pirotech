@@ -1,12 +1,12 @@
 "use client";
 
-import { Bell, Search, User } from "lucide-react";
+import { Bell, Search, User, Menu } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function Topbar() {
+export default function Topbar({ onMenuClick = () => {} }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showResults, setShowResults] = useState(false);
   const router = useRouter();
@@ -23,11 +23,21 @@ export default function Topbar() {
   );
 
   return (
-    <header className="h-16 bg-card-bg border-b border-card-border flex items-center justify-between px-8 sticky top-0 z-30">
-      {/* Search Bar */}
-      <div className="flex-1 max-w-md relative">
-        <div className="relative">
-          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-brand-sage" />
+    <header className="h-16 bg-card-bg border-b border-card-border flex items-center justify-between px-4 md:px-8 sticky top-0 z-30">
+      
+      {/* Mobile Hamburger & Search Bar Container */}
+      <div className="flex flex-1 items-center gap-3">
+        <button 
+          onClick={onMenuClick}
+          className="lg:hidden p-2 -ml-2 text-brand-sage hover:text-brand-green700 transition-colors"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+        
+        {/* Search Bar */}
+        <div className="flex-1 max-w-md relative hidden sm:block">
+          <div className="relative">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-brand-sage" />
           <input
             type="text"
             placeholder="Cari menu tujuan..."
@@ -69,6 +79,7 @@ export default function Topbar() {
             )}
           </div>
         )}
+      </div>
       </div>
 
       {/* Right Side */}

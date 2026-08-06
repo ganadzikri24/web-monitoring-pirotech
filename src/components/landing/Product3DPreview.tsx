@@ -28,6 +28,7 @@ export default function Product3DPreview() {
     <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-card-bg border border-card-border shadow-lg group">
       <video
         ref={videoRef}
+        autoPlay
         loop
         muted
         playsInline
