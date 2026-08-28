@@ -202,8 +202,8 @@ export default function Home() {
           {/* Stats counters */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 mb-14">
             {[
-              { value: 127, suffix: " kg", label: "Total Sampah Diolah", desc: "Plastik yang berhasil diproses" },
-              { value: 66, suffix: " L", label: "BBM Cair Dihasilkan", desc: "Bahan bakar setara solar" },
+              { value: 127, prefix: "", suffix: " kg", label: "Total Sampah Diolah", desc: "Plastik yang berhasil diproses" },
+              { value: 66, prefix: "", suffix: " L", label: "BBM Cair Dihasilkan", desc: "Bahan bakar setara solar" },
             ].map((stat, i) => (
               <motion.div
                 key={i}
