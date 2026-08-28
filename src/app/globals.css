@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* ── Light Mode (default) ── */
 :root {
@@ -88,18 +89,14 @@ body {
 }
 
 /* ── Smooth transitions for theme switching ── */
-*,
-*::before,
-*::after {
+body {
   transition-property: background-color, border-color, color;
   transition-duration: 200ms;
   transition-timing-function: ease-in-out;
 }
 
 /* Disable transitions on page load to avoid flash */
-.no-transitions *,
-.no-transitions *::before,
-.no-transitions *::after {
+.no-transitions body {
   transition: none !important;
 }
 

@@ -6,10 +6,9 @@ import { Droplet, Flame, Percent, CheckCircle } from "lucide-react";
 interface EstimationCardProps {
   fuelLiters: number;
   residueKg: number;
-  yieldRate: number;
 }
 
-export default function EstimationCard({ fuelLiters, residueKg, yieldRate }: EstimationCardProps) {
+export default function EstimationCard({ fuelLiters, residueKg }: EstimationCardProps) {
   const hasData = fuelLiters > 0;
 
   // Memoize the bottle display to avoid recalculating on every render
@@ -38,7 +37,7 @@ export default function EstimationCard({ fuelLiters, residueKg, yieldRate }: Est
             return (
               <div key={i} className="w-16 h-24 relative flex items-end justify-center shrink-0">
                 {/* Container back */}
-                <svg viewBox="0 0 100 140" className="absolute inset-0 w-full h-full text-brand-sage/30 dark:text-brand-sage/20">
+                <svg viewBox="0 0 100 140" className="absolute inset-0 w-full h-full text-white/30">
                   <path
                     d="M20,30 L30,30 L30,10 C30,4 34,0 40,0 L60,0 C66,0 70,4 70,10 L70,30 L80,30 C91,30 100,39 100,50 L100,120 C100,131 91,140 80,140 L20,140 C9,140 0,131 0,120 L0,50 C0,39 9,30 20,30 Z M40,30 L60,30 L60,15 L40,15 L40,30 Z M15,50 L15,120 C15,123 17,125 20,125 L80,125 C83,125 85,123 85,120 L85,50 C85,47 83,45 80,45 L20,45 C17,45 15,47 15,50 Z"
                     fill="currentColor"
@@ -60,7 +59,7 @@ export default function EstimationCard({ fuelLiters, residueKg, yieldRate }: Est
                 </div>
 
                 {/* Container front outline */}
-                <svg viewBox="0 0 100 140" className="absolute inset-0 w-full h-full text-gray-900 dark:text-white">
+                <svg viewBox="0 0 100 140" className="absolute inset-0 w-full h-full text-white">
                   <path
                     d="M20,30 L30,30 L30,10 C30,4 34,0 40,0 L60,0 C66,0 70,4 70,10 L70,30 L80,30 C91,30 100,39 100,50 L100,120 C100,131 91,140 80,140 L20,140 C9,140 0,131 0,120 L0,50 C0,39 9,30 20,30 Z M40,30 L60,30 L60,15 L40,15 L40,30 Z M15,50 L15,120 C15,123 17,125 20,125 L80,125 C83,125 85,123 85,120 L85,50 C85,47 83,45 80,45 L20,45 C17,45 15,47 15,50 Z"
                     fill="none"
@@ -72,17 +71,12 @@ export default function EstimationCard({ fuelLiters, residueKg, yieldRate }: Est
             );
           })}
         </div>
-        <p className="text-xs font-bold text-brand-sage tabular-nums">
+        <p className="text-xs font-bold text-white tabular-nums">
           {(fuelLiters / bottleCapacity).toFixed(1)} botol × {bottleCapacity}L
         </p>
       </div>
     );
   }, [fuelLiters]);
-
-  // Memoize yield circle offset
-  const yieldDashOffset = useMemo(() => {
-    return 301.6 - (301.6 * yieldRate) / 100;
-  }, [yieldRate]);
 
   return (
     <div className="bg-brand-green700 p-8 rounded-2xl shadow-lg text-white h-full flex flex-col relative overflow-hidden">
@@ -136,35 +130,6 @@ export default function EstimationCard({ fuelLiters, residueKg, yieldRate }: Est
               </span>
               <span className="text-brand-green50 text-sm">kg</span>
             </div>
-          </div>
-
-          <div className="bg-white/5 rounded-2xl p-6 border border-white/10 hover:bg-white/10 transition-colors relative overflow-hidden group">
-            <div className="flex items-center gap-3 text-brand-green50 mb-3 relative z-10">
-              <div className="p-1.5 bg-white/20 rounded-lg">
-                <Percent className="w-4 h-4 text-white" />
-              </div>
-              <span className="font-semibold text-sm">Yield Rate (Efisiensi)</span>
-            </div>
-            
-            <div className="flex items-baseline gap-2 relative z-10">
-              <span className="text-3xl font-bold tabular-nums">
-                {yieldRate.toFixed(1)}
-              </span>
-              <span className="text-brand-green50 text-sm">%</span>
-            </div>
-
-            {/* Circular progress background effect — pure SVG, no motion */}
-            {hasData && (
-              <svg className="absolute -right-4 -bottom-4 w-28 h-28 opacity-20 transform -rotate-90 group-hover:opacity-30 transition-opacity">
-                <circle cx="56" cy="56" r="48" fill="none" stroke="currentColor" strokeWidth="8" className="text-brand-green700" />
-                <circle 
-                  cx="56" cy="56" r="48" fill="none" stroke="currentColor" strokeWidth="8" 
-                  className="text-white transition-[stroke-dashoffset] duration-700 ease-out"
-                  strokeDasharray="301.6"
-                  strokeDashoffset={yieldDashOffset}
-                />
-              </svg>
-            )}
           </div>
         </div>
       </div>

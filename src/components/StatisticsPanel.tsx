@@ -46,7 +46,7 @@ export default function StatisticsPanel() {
 
   return (
     <>
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {/* Highlight Card */}
         <div className="bg-brand-green700 p-6 rounded-2xl shadow-sm text-white flex flex-col justify-between relative overflow-hidden group">
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/3" />
@@ -58,7 +58,7 @@ export default function StatisticsPanel() {
               </div>
               <span className="font-semibold text-sm">Rata-Rata Hasil</span>
             </div>
-            <button onClick={() => openModal("Detail Yield")} className="p-1 rounded-lg hover:bg-white/10 transition-colors text-white/70 hover:text-white group-hover:translate-x-1 duration-200">
+            <button onClick={() => openModal("Detail Hasil")} className="p-1 rounded-lg hover:bg-white/10 transition-colors text-white/70 hover:text-white group-hover:translate-x-1 duration-200">
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -70,35 +70,12 @@ export default function StatisticsPanel() {
               <span className="text-brand-green50 text-sm font-medium">liter/kg</span>
             </div>
             <p className="text-xs text-brand-green50/80 leading-relaxed">
-              Rata-rata yield (liter BBM per kg plastik) dari seluruh pengolahan.
+              Rata-rata BBM yang dihasilkan (liter per kg plastik) dari seluruh pengolahan.
             </p>
           </div>
         </div>
 
         {/* Outline Cards */}
-        <div className="bg-card-bg p-6 rounded-2xl shadow-sm border border-card-border flex flex-col justify-between hover:shadow-md transition-shadow group">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="bg-brand-green50 text-brand-green p-2.5 rounded-xl">
-                <Banknote className="w-5 h-5" />
-              </div>
-              <span className="font-semibold text-sm text-brand-sage">Nilai Ekonomis</span>
-            </div>
-            <button onClick={() => openModal("Detail Nilai Ekonomis")} className="p-1 rounded-lg hover:bg-card-border transition-colors text-brand-sage/50 hover:text-brand-green group-hover:translate-x-1 duration-200">
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-          <div>
-            <div className="text-3xl font-bold text-brand-green700 mb-2 tabular-nums">
-              <AnimatedCounter target={economicValue} prefix="Rp " />
-            </div>
-            <p className="text-[11px] text-brand-sage/60 mb-2">Berdasarkan harga BBM setara solar ≈ Rp 6.800/liter</p>
-            <p className="text-xs text-brand-sage leading-relaxed">
-              Potensi pendapatan dari BBM yang dihasilkan.
-            </p>
-          </div>
-        </div>
-
         <div className="bg-card-bg p-6 rounded-2xl shadow-sm border border-card-border flex flex-col justify-between hover:shadow-md transition-shadow group">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
@@ -118,9 +95,9 @@ export default function StatisticsPanel() {
               </span>
               <span className="text-brand-sage text-sm font-medium">kg CO₂ dihemat</span>
             </div>
-            <p className="text-[11px] text-brand-sage/60 mb-2">Vs pembakaran (≈2.9 kg CO₂/kg plastik)</p>
+            <p className="text-[11px] text-brand-sage/60 mb-2">Vs pembakaran biasa (≈2.9 kg CO₂/kg plastik)</p>
             <p className="text-xs text-brand-sage leading-relaxed">
-              Emisi gas rumah kaca yang berhasil dicegah.
+              Fokus menghemat emisi CO₂ dibandingkan dengan pembakaran sampah plastik biasa.
             </p>
           </div>
         </div>

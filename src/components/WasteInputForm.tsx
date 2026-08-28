@@ -77,8 +77,8 @@ export default function WasteInputForm({ weight, setWeight, type, setType, disab
                   >
                     {/* Checkmark badge if selected */}
                     {isSelected && (
-                      <div className="absolute top-1.5 right-1.5 w-4 h-4 bg-brand-green text-white rounded-full flex items-center justify-center shadow-sm z-10">
-                        <Check className="w-2.5 h-2.5 stroke-[3]" />
+                      <div className="absolute top-1.5 right-1.5 w-5 h-5 bg-brand-green text-white rounded-full flex items-center justify-center shadow-md z-30">
+                        <Check className="w-3 h-3 stroke-[3]" />
                       </div>
                     )}
 

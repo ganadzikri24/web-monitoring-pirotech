@@ -128,7 +128,6 @@ export default function OverviewPage() {
             <EstimationCard
               fuelLiters={fuelLiters}
               residueKg={residueKg}
-              yieldRate={yieldRate}
             />
           </div>
 

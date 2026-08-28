@@ -16,17 +16,31 @@ export default function HubungiKamiPage() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError(false);
     setSuccess(false);
 
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess(true);
-    }, 1500);
+    const formData = new FormData(e.currentTarget);
+    try {
+      const response = await fetch("https://formsubmit.co/ajax/pirotechsvipb@gmail.com", {
+        method: "POST",
+        headers: {
+          'Accept': 'application/json'
+        },
+        body: formData
+      });
+
+      if (response.ok) {
+        setSuccess(true);
+      } else {
+        setError(true);
+      }
+    } catch (err) {
+      setError(true);
+    }
+    setLoading(false);
   };
 
   return (
@@ -56,7 +70,7 @@ export default function HubungiKamiPage() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-brand-green700">Email</p>
-                  <p className="text-sm text-brand-sage">info@pirotech.id</p>
+                  <p className="text-sm text-brand-sage">pirotechsvipb@gmail.com</p>
                 </div>
               </div>
 
@@ -113,6 +127,7 @@ export default function HubungiKamiPage() {
                       </label>
                       <input
                         type="text"
+                        name="name"
                         required
                         placeholder="Nama"
                         className="w-full px-4 py-3 rounded-xl border border-input-border bg-input-bg text-foreground focus:outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green transition-all"
@@ -124,6 +139,7 @@ export default function HubungiKamiPage() {
                       </label>
                       <input
                         type="email"
+                        name="email"
                         required
                         placeholder="Email"
                         className="w-full px-4 py-3 rounded-xl border border-input-border bg-input-bg text-foreground focus:outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green transition-all"
@@ -137,6 +153,7 @@ export default function HubungiKamiPage() {
                     </label>
                     <input
                       type="text"
+                      name="_subject"
                       placeholder="Subjek (opsional)"
                       className="w-full px-4 py-3 rounded-xl border border-input-border bg-input-bg text-foreground focus:outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green transition-all"
                     />
@@ -147,6 +164,7 @@ export default function HubungiKamiPage() {
                       Pesan <span className="text-red-500">*</span>
                     </label>
                     <textarea
+                      name="message"
                       required
                       rows={5}
                       placeholder="Pesan kamu…"

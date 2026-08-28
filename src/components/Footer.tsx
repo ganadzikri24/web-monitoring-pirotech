@@ -58,7 +58,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start gap-2.5 text-sm text-brand-sage">
                 <Mail className="w-4 h-4 mt-0.5 shrink-0 text-brand-green" />
-                <span>info@pirotech.id</span>
+                <span>pirotechsvipb@gmail.com</span>
               </li>
               <li className="flex items-start gap-2.5 text-sm text-brand-sage">
                 <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-brand-green" />
@@ -94,7 +94,7 @@ export default function Footer() {
             © {currentYear} PiRoTech • Sekolah Vokasi IPB. All rights reserved.
           </p>
           <p className="text-brand-sage/60 text-xs">
-            Monitoring Pirolisis IoT v0.1.0
+            PiRoTech IoT v0.1.0
           </p>
         </div>
       </div>

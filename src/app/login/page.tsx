@@ -21,7 +21,6 @@ export default function LoginPage() {
     setLoading(true);
     setError(false);
 
-    // TODO: hapus mock auth & mock data setelah Firebase disetup
     if (process.env.NEXT_PUBLIC_USE_MOCK_AUTH === "true") {
       if (email === "admin@pirotech.id" && password === "admin123") {
         import("@/lib/mockAuth").then(({ setMockSession }) => {
@@ -137,7 +136,7 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="email@perusahaan.com"
+                  placeholder=""
                   className="w-full px-4 py-3.5 rounded-xl border border-input-border bg-input-bg text-foreground focus:outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green transition-all placeholder:text-muted-foreground"
                 />
               </div>

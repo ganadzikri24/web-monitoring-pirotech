@@ -41,7 +41,6 @@ export default function CalculatorSection() {
           <EstimationCard
             fuelLiters={fuelLiters}
             residueKg={residueKg}
-            yieldRate={yieldRate}
           />
         </div>
       </div>

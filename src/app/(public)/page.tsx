@@ -40,7 +40,7 @@ const FEATURES = [
   {
     icon: Gauge,
     title: "Efisiensi Tinggi",
-    desc: "Yield rate hingga 60–70% untuk plastik PP — artinya dari 10 kg plastik bisa dihasilkan hingga 7 liter BBM cair.",
+    desc: "Mengubah sampah plastik menjadi BBM cair dengan proses yang optimal dan efisien.",
     color: "text-amber-500",
     bg: "bg-amber-50 dark:bg-amber-500/10",
   },
@@ -115,7 +115,7 @@ export default function Home() {
           <motion.div {...fadeInUp}>
             {/* Video player slot */}
             <div className="relative aspect-video rounded-2xl overflow-hidden bg-brand-green50 border border-card-border shadow-lg group">
-              <video 
+              <video
                 autoPlay
                 loop
                 muted
@@ -200,12 +200,10 @@ export default function Home() {
           </motion.div>
 
           {/* Stats counters */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-14">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 mb-14">
             {[
               { value: 127, suffix: " kg", label: "Total Sampah Diolah", desc: "Plastik yang berhasil diproses" },
               { value: 66, suffix: " L", label: "BBM Cair Dihasilkan", desc: "Bahan bakar setara solar" },
-              { value: 369, suffix: " kg", label: "CO₂ Dihemat", desc: "Vs pembakaran terbuka" },
-              { value: 449, prefix: "Rp ", suffix: "rb", label: "Nilai Ekonomis", desc: "Potensi pendapatan dari BBM" },
             ].map((stat, i) => (
               <motion.div
                 key={i}
@@ -354,7 +352,7 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-10">
                 <div className="flex items-center gap-2 text-white/80 text-sm">
                   <Mail className="w-4 h-4" />
-                  info@pirotech.id
+                  pirotechsvipb@gmail.com
                 </div>
                 <div className="flex items-center gap-2 text-white/80 text-sm">
                   <MapPin className="w-4 h-4" />

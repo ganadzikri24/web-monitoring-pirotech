@@ -31,7 +31,13 @@ export default function Logo({ size = "md", className }: LogoProps) {
           src="/pirotechlogo.png"
           alt="PiRoTech Logo"
           fill
-          className="object-contain dark:brightness-110"
+          className="object-contain dark:hidden"
+        />
+        <Image
+          src="/pirotechlogo-putih.png"
+          alt="PiRoTech Logo"
+          fill
+          className="object-contain hidden dark:block"
         />
       </div>
     </div>

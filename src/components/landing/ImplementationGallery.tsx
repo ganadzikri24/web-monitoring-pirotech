@@ -27,7 +27,7 @@ export default function ImplementationGallery() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: i * 0.08, duration: 0.4 }}
+            transition={{ duration: 0.5 }}
             whileHover={{ y: -4, transition: { duration: 0.2 } }}
             onClick={() => setSelectedId(item.id)}
             className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-card-bg border border-card-border shadow-sm group cursor-pointer transform-gpu"
