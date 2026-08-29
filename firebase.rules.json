@@ -44,12 +44,26 @@
       "notifications": {
         ".read": "auth != null && auth.token.role === 'admin'",
         ".write": "auth != null && auth.token.role === 'admin'"
+      },
+      "telemetry": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.token.iot === true"
+      },
+      "sessions": {
+        ".read": "auth != null",
+        ".write": "auth != null && (auth.token.role === 'admin' || auth.token.role === 'operator')"
       }
     },
     "contact": {
       "messages": {
         ".read": "auth != null && auth.token.role === 'admin'",
         ".write": true
+      }
+    },
+    "users": {
+      ".read": "auth != null",
+      "$uid": {
+        ".write": "auth != null && (auth.uid === $uid || auth.token.role === 'admin')"
       }
     }
   }
