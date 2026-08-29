@@ -60,11 +60,27 @@
         ".write": true
       }
     },
+    "monitoring": {
+      ".read": "auth != null",
+      ".write": true
+    },
+    "control": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
     "users": {
       ".read": "auth != null",
       "$uid": {
         ".write": "auth != null && (auth.uid === $uid || auth.token.role === 'admin')"
       }
+    },
+    "sensor_data": {
+      ".read": "auth != null",
+      ".write": true
+    },
+    "log_activity": {
+      ".read": "auth != null",
+      ".write": "auth != null && (auth.token.role === 'admin' || auth.token.role === 'operator')"
     }
   }
 }
