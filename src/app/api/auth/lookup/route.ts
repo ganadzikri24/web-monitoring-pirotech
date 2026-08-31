@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 
+export const dynamic = 'force-dynamic';
+
 // Lookup username → email (untuk login dengan username)
 export async function GET(request: Request) {
   try {

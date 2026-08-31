@@ -2,8 +2,6 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
 import { getAuth } from "firebase/auth";
 
-let app: any, db: any, auth: any;
-
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
   authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -14,10 +12,18 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Selalu inisialisasi App dan Database (agar RTDB selalu jalan)
-app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
-db = getDatabase(app);
+let app: any, db: any, auth: any;
 
-auth = getAuth(app);
+// Hanya inisialisasi jika env vars tersedia (build-time safety)
+if (firebaseConfig.apiKey && firebaseConfig.projectId) {
+  app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+  db = firebaseConfig.databaseURL ? getDatabase(app) : null;
+  auth = getAuth(app);
+} else {
+  // Stub kosong agar tidak crash saat build tanpa env vars
+  app = null;
+  db = null;
+  auth = null;
+}
 
 export { app, db, auth };

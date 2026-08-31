@@ -5,6 +5,8 @@ import {
   type LogActivityEntry,
 } from "@/lib/pushIdTimeRange";
 
+export const dynamic = 'force-dynamic';
+
 const DB_BASE_URL =
   process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL ||
   "https://prikitiw-18dde-default-rtdb.asia-southeast1.firebasedatabase.app";

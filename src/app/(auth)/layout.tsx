@@ -2,9 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Sidebar from "@/components/Sidebar";
-import Topbar from "@/components/Topbar";
+import nextDynamic from "next/dynamic";
 import { useRole } from "@/lib/useRole";
+
+export const dynamic = "force-dynamic";
+
+const Sidebar = nextDynamic(() => import("@/components/Sidebar"), { ssr: false });
+const Topbar = nextDynamic(() => import("@/components/Topbar"), { ssr: false });
 
 export default function AuthLayout({
   children,
