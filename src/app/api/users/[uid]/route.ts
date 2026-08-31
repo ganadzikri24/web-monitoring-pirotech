@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { adminAuth, adminDb } from '@/lib/firebaseAdmin';
+import { getAdminAuth, getAdminDb } from '@/lib/firebaseAdmin';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,16 +11,19 @@ export async function DELETE(request: Request, props: { params: Promise<{ uid: s
       return NextResponse.json({ error: 'User ID is required' }, { status: 400 });
     }
 
+    const auth = getAdminAuth();
+    const db = getAdminDb();
+
     // Ambil data user terlebih dahulu untuk membersihkan username mapping
-    const userRecord = await adminAuth.getUser(uid);
+    const userRecord = await auth.getUser(uid);
     const username = userRecord.customClaims?.username;
 
     // Hapus mapping username dari RTDB
     if (username) {
-      await adminDb.ref(`pirotech/usernames/${username}`).remove();
+      await db.ref(`pirotech/usernames/${username}`).remove();
     }
 
-    await adminAuth.deleteUser(uid);
+    await auth.deleteUser(uid);
 
     return NextResponse.json({ message: 'Pengguna berhasil dihapus' });
   } catch (error: any) {
@@ -40,8 +43,11 @@ export async function PATCH(request: Request, props: { params: Promise<{ uid: st
     const body = await request.json();
     const { role, username } = body;
 
+    const auth = getAdminAuth();
+    const db = getAdminDb();
+
     // Ambil data user
-    const userRecord = await adminAuth.getUser(uid);
+    const userRecord = await auth.getUser(uid);
     const existingClaims = userRecord.customClaims || {};
 
     let newClaims = { ...existingClaims };
@@ -57,7 +63,7 @@ export async function PATCH(request: Request, props: { params: Promise<{ uid: st
 
       // Validasi username unik jika ada username baru
       if (username && username.toLowerCase() !== existingClaims.username) {
-        const usernameRef = adminDb.ref(`pirotech/usernames/${username.toLowerCase()}`);
+        const usernameRef = db.ref(`pirotech/usernames/${username.toLowerCase()}`);
         const snap = await usernameRef.get();
         if (snap.exists()) {
           return NextResponse.json({ error: 'Username sudah digunakan oleh akun lain' }, { status: 400 });
@@ -66,19 +72,19 @@ export async function PATCH(request: Request, props: { params: Promise<{ uid: st
 
       // Hapus mapping username lama jika ada
       if (existingClaims.username) {
-        await adminDb.ref(`pirotech/usernames/${existingClaims.username}`).remove();
+        await db.ref(`pirotech/usernames/${existingClaims.username}`).remove();
       }
 
       // Simpan mapping username baru jika ada
       if (username) {
-        await adminDb.ref(`pirotech/usernames/${username.toLowerCase()}`).set(userRecord.email);
+        await db.ref(`pirotech/usernames/${username.toLowerCase()}`).set(userRecord.email);
         newClaims.username = username.toLowerCase();
       } else {
         delete newClaims.username;
       }
     }
 
-    await adminAuth.setCustomUserClaims(uid, newClaims);
+    await auth.setCustomUserClaims(uid, newClaims);
 
     return NextResponse.json({ message: 'Profil berhasil diperbarui', claims: newClaims });
   } catch (error: any) {

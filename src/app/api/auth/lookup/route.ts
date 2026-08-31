@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { adminDb } from '@/lib/firebaseAdmin';
+import { getAdminDb } from '@/lib/firebaseAdmin';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,7 +13,8 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: 'Username wajib diisi' }, { status: 400 });
     }
 
-    const usernameRef = adminDb.ref(`pirotech/usernames/${username.toLowerCase()}`);
+    const db = getAdminDb();
+    const usernameRef = db.ref(`pirotech/usernames/${username.toLowerCase()}`);
     const snap = await usernameRef.get();
 
     if (!snap.exists()) {

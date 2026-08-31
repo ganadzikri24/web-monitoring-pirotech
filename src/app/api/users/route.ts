@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
-import { adminAuth, adminDb } from '@/lib/firebaseAdmin';
+import { getAdminAuth, getAdminDb } from '@/lib/firebaseAdmin';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const listUsersResult = await adminAuth.listUsers(1000);
+    const auth = getAdminAuth();
+    const listUsersResult = await auth.listUsers(1000);
     const users = listUsersResult.users.map((userRecord) => ({
       uid: userRecord.uid,
       email: userRecord.email,
@@ -36,16 +37,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Username tidak boleh mengandung spasi' }, { status: 400 });
     }
 
+    const auth = getAdminAuth();
+    const db = getAdminDb();
+
     // Validasi username unik jika disediakan
     if (username) {
-      const usernameRef = adminDb.ref(`pirotech/usernames/${username.toLowerCase()}`);
+      const usernameRef = db.ref(`pirotech/usernames/${username.toLowerCase()}`);
       const snap = await usernameRef.get();
       if (snap.exists()) {
         return NextResponse.json({ error: 'Username sudah digunakan oleh akun lain' }, { status: 400 });
       }
     }
 
-    const userRecord = await adminAuth.createUser({
+    const userRecord = await auth.createUser({
       email,
       password,
     });
@@ -54,11 +58,11 @@ export async function POST(request: Request) {
     if (username) {
       claims.username = username.toLowerCase();
     }
-    await adminAuth.setCustomUserClaims(userRecord.uid, claims);
+    await auth.setCustomUserClaims(userRecord.uid, claims);
 
     // Simpan mapping username → email di Realtime Database
     if (username) {
-      await adminDb.ref(`pirotech/usernames/${username.toLowerCase()}`).set(email);
+      await db.ref(`pirotech/usernames/${username.toLowerCase()}`).set(email);
     }
 
     return NextResponse.json({
