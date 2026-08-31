@@ -22,13 +22,17 @@ function initAdminApp() {
 export const adminAuth = new Proxy({} as ReturnType<typeof getAuth>, {
   get(target, prop) {
     initAdminApp();
-    return (getAuth() as any)[prop];
+    const auth = getAuth();
+    const value = (auth as any)[prop];
+    return typeof value === 'function' ? value.bind(auth) : value;
   }
 });
 
 export const adminDb = new Proxy({} as ReturnType<typeof getDatabase>, {
   get(target, prop) {
     initAdminApp();
-    return (getDatabase() as any)[prop];
+    const db = getDatabase();
+    const value = (db as any)[prop];
+    return typeof value === 'function' ? value.bind(db) : value;
   }
 });
