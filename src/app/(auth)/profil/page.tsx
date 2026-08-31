@@ -52,7 +52,7 @@ function ProfilContent() {
       const getUsername = async () => {
         try {
           const idTokenResult = await user.getIdTokenResult();
-          setProfileUsername(idTokenResult.claims.username || "");
+          setProfileUsername((idTokenResult.claims.username as string) || "");
         } catch (e) {
           console.error(e);
         }
