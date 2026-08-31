@@ -1,46 +1,117 @@
 "use client";
 
-import { Download, Search, Calendar } from "lucide-react";
+import { Download, Search, Calendar, Trash2 } from "lucide-react";
 import { useState, useEffect } from "react";
-import { ref, get } from "firebase/database";
+import { ref, get, update } from "firebase/database";
 import { db } from "@/lib/firebase";
 import SessionDetailModal from "./SessionDetailModal";
+import { useRole } from "@/lib/useRole";
 
 export default function LogActivityTable() {
   const [searchTerm, setSearchTerm] = useState("");
   const [batches, setBatches] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedLogId, setSelectedLogId] = useState<string | null>(null);
+  const [selectedLogs, setSelectedLogs] = useState<string[]>([]);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const { isAdmin } = useRole();
+
+  const loadBatches = async () => {
+    try {
+      setLoading(true);
+      const logRef = ref(db, 'log_activity');
+      const snapshot = await get(logRef);
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const parsedBatches = Object.keys(data).map(key => ({
+          id: key,
+          ...data[key]
+        }));
+        // Urutkan berdasarkan tanggal terbaru (karena format YYYY-MM-DD aman di-sort string)
+        parsedBatches.sort((a, b) => {
+           const tA = a.tanggal || "";
+           const tB = b.tanggal || "";
+           return tB.localeCompare(tA);
+        });
+        setBatches(parsedBatches);
+      } else {
+        setBatches([]);
+      }
+    } catch (err) {
+      console.error("Error loading log_activity:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const loadBatches = async () => {
-      try {
-        const logRef = ref(db, 'log_activity');
-        const snapshot = await get(logRef);
-        if (snapshot.exists()) {
-          const data = snapshot.val();
-          const parsedBatches = Object.keys(data).map(key => ({
-            id: key,
-            ...data[key]
-          }));
-          // Urutkan berdasarkan tanggal terbaru (karena format YYYY-MM-DD aman di-sort string)
-          parsedBatches.sort((a, b) => {
-             const tA = a.tanggal || "";
-             const tB = b.tanggal || "";
-             return tB.localeCompare(tA);
-          });
-          setBatches(parsedBatches);
-        } else {
-          setBatches([]);
-        }
-      } catch (err) {
-        console.error("Error loading log_activity:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
     loadBatches();
   }, []);
+
+  const handleDeleteSelected = async () => {
+    if (!isAdmin) return;
+    if (!confirm(`Hapus ${selectedLogs.length} log terpilih? Tindakan ini tidak dapat dibatalkan.`)) return;
+
+    setIsDeleting(true);
+    try {
+      const updates: Record<string, null> = {};
+      selectedLogs.forEach(id => {
+        updates[`log_activity/${id}`] = null;
+      });
+      await update(ref(db), updates);
+      setSelectedLogs([]);
+      await loadBatches();
+    } catch (error) {
+      console.error("Error deleting logs:", error);
+      alert("Terjadi kesalahan saat menghapus log.");
+    } finally {
+      setIsDeleting(false);
+      setIsSelectionMode(false);
+    }
+  };
+
+  const handleExportTableCSV = () => {
+    if (filteredBatches.length === 0) return;
+
+    const headers = ["Waktu Mulai", "Berat Sampah (kg)", "Jenis Plastik", "Hasil BBM (liter)", "Status", "Durasi"];
+    const rows = filteredBatches.map(b => [
+      formatTanggal(b.tanggal),
+      b.berat_kg || "",
+      b.jenis_plastik || "",
+      b.bbm_liter || "",
+      "Selesai",
+      b.durasi || ""
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.map(cell => `"${cell}"`).join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `riwayat_pirolisis.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setSelectedLogs(filteredBatches.map(b => b.id));
+    } else {
+      setSelectedLogs([]);
+    }
+  };
+
+  const toggleSelectLog = (id: string) => {
+    setSelectedLogs(prev => 
+      prev.includes(id) ? prev.filter(logId => logId !== id) : [...prev, id]
+    );
+  };
 
   // Filter based on search (simplified search by status or type)
   const filteredBatches = batches.filter(batch => {
@@ -92,10 +163,45 @@ export default function LogActivityTable() {
             </div>
           </div>
 
-          <button className="flex items-center gap-2 bg-brand-green hover:bg-brand-green700 text-white px-5 py-2.5 rounded-xl font-medium transition-colors text-sm shadow-sm w-full md:w-auto justify-center">
-            <Download className="w-4 h-4" />
-            Export CSV
-          </button>
+          <div className="flex items-center gap-3 w-full md:w-auto">
+            {isAdmin && (
+              isSelectionMode ? (
+                <>
+                  <button 
+                    onClick={() => {
+                      setIsSelectionMode(false);
+                      setSelectedLogs([]);
+                    }}
+                    className="flex items-center gap-2 bg-input-bg hover:bg-input-border text-brand-sage px-4 py-2.5 rounded-xl font-medium transition-colors text-sm shadow-sm justify-center"
+                  >
+                    Batal
+                  </button>
+                  {selectedLogs.length > 0 && (
+                    <button 
+                      onClick={handleDeleteSelected}
+                      disabled={isDeleting}
+                      className="flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 px-5 py-2.5 rounded-xl font-medium transition-colors text-sm shadow-sm justify-center disabled:opacity-70"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      {isDeleting ? "Menghapus..." : `Hapus (${selectedLogs.length})`}
+                    </button>
+                  )}
+                </>
+              ) : (
+                <button 
+                  onClick={() => setIsSelectionMode(true)}
+                  className="flex items-center gap-2 bg-input-bg hover:bg-input-border text-brand-sage px-5 py-2.5 rounded-xl font-medium transition-colors text-sm shadow-sm justify-center"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  Hapus Log
+                </button>
+              )
+            )}
+            <button onClick={handleExportTableCSV} className="flex items-center gap-2 bg-brand-green hover:bg-brand-green700 text-white px-5 py-2.5 rounded-xl font-medium transition-colors text-sm shadow-sm w-full md:w-auto justify-center">
+              <Download className="w-4 h-4" />
+              Export CSV
+            </button>
+          </div>
         </div>
 
         {/* Table */}
@@ -103,6 +209,16 @@ export default function LogActivityTable() {
           <table className="w-full text-left border-collapse min-w-[800px]">
             <thead>
               <tr className="bg-input-bg/50 text-brand-green700 text-sm">
+                {isAdmin && isSelectionMode && (
+                  <th className="px-6 py-4 font-semibold border-b border-card-border w-10">
+                    <input 
+                      type="checkbox" 
+                      onChange={handleSelectAll}
+                      checked={selectedLogs.length > 0 && selectedLogs.length === filteredBatches.length}
+                      className="rounded border-input-border text-brand-green focus:ring-brand-green/20"
+                    />
+                  </th>
+                )}
                 <th className="px-6 py-4 font-semibold border-b border-card-border">Waktu Mulai</th>
                 <th className="px-6 py-4 font-semibold border-b border-card-border">Berat Sampah (kg)</th>
                 <th className="px-6 py-4 font-semibold border-b border-card-border">Jenis Plastik</th>
@@ -129,9 +245,19 @@ export default function LogActivityTable() {
                 filteredBatches.map((row) => (
                   <tr 
                     key={row.id} 
-                    onClick={() => setSelectedLogId(row.id)}
+                    onClick={() => isSelectionMode ? toggleSelectLog(row.id) : setSelectedLogId(row.id)}
                     className="hover:bg-input-bg/50 cursor-pointer transition-colors border-b border-card-border/50 last:border-0"
                   >
+                    {isAdmin && isSelectionMode && (
+                      <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                        <input 
+                          type="checkbox" 
+                          checked={selectedLogs.includes(row.id)}
+                          onChange={() => toggleSelectLog(row.id)}
+                          className="rounded border-input-border text-brand-green focus:ring-brand-green/20"
+                        />
+                      </td>
+                    )}
                     <td className="px-6 py-4 font-medium text-foreground">{formatTanggal(row.tanggal)}</td>
                     <td className="px-6 py-4">{row.berat_kg ?? '-'}</td>
                     <td className="px-6 py-4 uppercase">

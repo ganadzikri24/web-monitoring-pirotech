@@ -16,7 +16,7 @@ export default function AuthLayout({
 
   useEffect(() => {
     // Existing Firebase Auth logic check
-    if (!loading && role === 'guest') {
+    if (!loading && role === null) {
       router.push("/login");
     }
   }, [role, loading, router]);

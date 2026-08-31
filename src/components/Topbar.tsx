@@ -11,7 +11,8 @@ export default function Topbar({ onMenuClick = () => {} }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showResults, setShowResults] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const { user, isAdmin } = useRole();
+  const [showNotifications, setShowNotifications] = useState(false);
+  const { user, username, isAdmin } = useRole();
   const router = useRouter();
 
   const menuItems = [
@@ -89,10 +90,48 @@ export default function Topbar({ onMenuClick = () => {} }) {
       <div className="flex items-center gap-4">
         <ThemeToggle />
 
-        <button className="relative text-brand-sage hover:text-brand-green700 transition-colors">
-          <Bell className="w-5 h-5" />
-          <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full border-2 border-card-bg" />
-        </button>
+        <div className="relative">
+          <button 
+            onClick={() => setShowNotifications(!showNotifications)}
+            className="relative text-brand-sage hover:text-brand-green700 transition-colors"
+          >
+            <Bell className="w-5 h-5" />
+            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full border-2 border-card-bg" />
+          </button>
+          
+          {showNotifications && (
+            <div className="absolute right-0 mt-3 w-80 bg-card-bg border border-card-border rounded-xl shadow-lg overflow-hidden z-50">
+              <div className="p-4 border-b border-card-border bg-input-bg/30">
+                <h3 className="font-bold text-sm text-brand-green700">Notifikasi</h3>
+              </div>
+              <div className="max-h-80 overflow-y-auto">
+                <div className="p-3 border-b border-card-border/50 hover:bg-brand-green50/50 transition-colors">
+                  <p className="text-xs font-semibold text-red-600 mb-1">Peringatan Suhu</p>
+                  <p className="text-xs text-brand-sage">Suhu mesin mencapai 90% batas maksimal pada Batch #12.</p>
+                  <p className="text-[10px] text-brand-sage/70 mt-1">2 menit yang lalu</p>
+                </div>
+                <div className="p-3 border-b border-card-border/50 hover:bg-brand-green50/50 transition-colors">
+                  <p className="text-xs font-semibold text-brand-green mb-1">Buzzer Aktif</p>
+                  <p className="text-xs text-brand-sage">Buzzer menyala otomatis (Suhu Kritis Terdeteksi).</p>
+                  <p className="text-[10px] text-brand-sage/70 mt-1">5 menit yang lalu</p>
+                </div>
+                <div className="p-3 hover:bg-brand-green50/50 transition-colors">
+                  <p className="text-xs font-semibold text-brand-green700 mb-1">Aktivitas Akun</p>
+                  <p className="text-xs text-brand-sage">Login berhasil dari perangkat baru.</p>
+                  <p className="text-[10px] text-brand-sage/70 mt-1">1 jam yang lalu</p>
+                </div>
+              </div>
+              <div className="p-2 border-t border-card-border bg-input-bg/30 text-center">
+                <button 
+                  onClick={() => router.push('/log-activity')}
+                  className="text-xs font-semibold text-brand-green hover:text-brand-green700 transition-colors w-full p-2"
+                >
+                  Lihat Semua Aktivitas
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
 
         <div className="relative">
           <button 
@@ -101,7 +140,7 @@ export default function Topbar({ onMenuClick = () => {} }) {
           >
             <div className="text-right hidden sm:block">
               <p className="text-sm font-bold text-brand-green700">
-                {user?.displayName || "Pengguna PiRoTech"}
+                {username || (user?.email ? user.email.split('@')[0] : null) || `User_${user?.uid?.substring(0, 4) || '1234'}`}
               </p>
               <p className="text-xs text-brand-sage">{user?.email || "Memuat..."}</p>
             </div>

@@ -4,12 +4,12 @@ import { useEffect, useState } from "react";
 import { BarChart3, Banknote, Leaf, Trash2, X, ChevronRight, Activity, Beaker } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import AnimatedCounter from "./landing/AnimatedCounter";
-import { getBatches } from "@/lib/mockData";
 import { calculateEconomicValue, calculateEmissionsSaved } from "@/lib/calculations";
-import type { Batch } from "@/lib/types";
+import { ref, get } from "firebase/database";
+import { db } from "@/lib/firebase";
 
 export default function StatisticsPanel() {
-  const [batches, setBatches] = useState<Batch[]>([]);
+  const [batches, setBatches] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   // Optional: tracking which card opened it, but we can just show the same full history for all
@@ -17,10 +17,28 @@ export default function StatisticsPanel() {
 
   useEffect(() => {
     const loadStats = async () => {
-      // In production, fetch from Firebase where status === "completed"
-      if (process.env.NEXT_PUBLIC_USE_MOCK_AUTH === "true") {
-        const allBatches = await getBatches();
-        setBatches(allBatches.filter((b) => b.status === "completed"));
+      try {
+        const logRef = ref(db, 'log_activity');
+        const snapshot = await get(logRef);
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          const parsedBatches = Object.keys(data).map(key => ({
+            id: key,
+            ...data[key]
+          }));
+          // Sort by date (newest first)
+          parsedBatches.sort((a, b) => {
+             const tA = a.tanggal || "";
+             const tB = b.tanggal || "";
+             return tB.localeCompare(tA);
+          });
+          setBatches(parsedBatches);
+        } else {
+          setBatches([]);
+        }
+      } catch (err) {
+        console.error("Error loading stats:", err);
+      } finally {
         setLoading(false);
       }
     };
@@ -32,8 +50,8 @@ export default function StatisticsPanel() {
   }
 
   // Calculations
-  const totalWaste = batches.reduce((sum, b) => sum + b.wasteKg, 0);
-  const totalFuel = batches.reduce((sum, b) => sum + (b.fuelLiters || 0), 0);
+  const totalWaste = batches.reduce((sum, b) => sum + (Number(b.berat_kg) || 0), 0);
+  const totalFuel = batches.reduce((sum, b) => sum + (Number(b.bbm_liter) || 0), 0);
   
   const avgYield = totalWaste > 0 ? (totalFuel / totalWaste) : 0;
   const economicValue = calculateEconomicValue(totalFuel);
@@ -164,12 +182,12 @@ export default function StatisticsPanel() {
                       <div key={i} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-card-border bg-input-bg gap-4">
                         <div>
                           <div className="text-sm font-bold text-foreground mb-1">
-                            {new Date(batch.startTs).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute:'2-digit' })}
+                            {batch.tanggal ? batch.tanggal.split('.')[0] : '-'}
                           </div>
                           <div className="text-xs text-brand-sage flex items-center gap-2">
-                            <span>Jenis: {batch.plasticType === 'mix' ? 'Campuran' : `Tipe ${batch.plasticType}`}</span>
+                            <span className="uppercase">Jenis: {batch.jenis_plastik === 'mix' ? 'Campuran' : (batch.jenis_plastik || '-')}</span>
                             <span className="w-1 h-1 rounded-full bg-card-border" />
-                            <span>Durasi: {batch.accumulatedMs ? Math.round(batch.accumulatedMs / 60000) : 0} menit</span>
+                            <span>Durasi: {batch.durasi || '-'}</span>
                           </div>
                         </div>
                         
@@ -177,14 +195,14 @@ export default function StatisticsPanel() {
                           <div className="text-right">
                             <div className="text-xs text-brand-sage mb-0.5">Input</div>
                             <div className="text-sm font-bold text-amber-600 dark:text-amber-500 flex items-center gap-1 justify-end">
-                              <Trash2 className="w-3 h-3" /> {batch.wasteKg} kg
+                              <Trash2 className="w-3 h-3" /> {batch.berat_kg || 0} kg
                             </div>
                           </div>
                           <div className="w-px bg-card-border" />
                           <div className="text-right">
                             <div className="text-xs text-brand-sage mb-0.5">Output BBM</div>
                             <div className="text-sm font-bold text-brand-green flex items-center gap-1 justify-end">
-                              <Beaker className="w-3 h-3" /> {batch.fuelLiters?.toFixed(1) || 0} L
+                              <Beaker className="w-3 h-3" /> {batch.bbm_liter ? Number(batch.bbm_liter).toFixed(1) : 0} L
                             </div>
                           </div>
                         </div>

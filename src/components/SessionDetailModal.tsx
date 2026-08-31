@@ -86,7 +86,36 @@ export default function SessionDetailModal({ logId, onClose }: SessionDetailModa
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `sensor_data_${logId}.csv`);
+    link.setAttribute("download", `sensor_data_raw_${logId}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handleExportDownsampledCSV = () => {
+    if (!data || !data.downsampled || data.downsampled.length === 0) return;
+
+    const headers = ["minute_label", "relative_minute", "avg_temp", "min_temp", "max_temp", "avg_pressure", "count"];
+    const rows = data.downsampled.map((r: any) => [
+      r.minuteLabel,
+      r.relativeMinute,
+      r.avgTemp,
+      r.minTemp,
+      r.maxTemp,
+      r.avgPressure !== null ? r.avgPressure : "",
+      r.count
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row: any[]) => row.map(cell => `"${cell}"`).join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `sensor_data_downsampled_${logId}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -181,21 +210,31 @@ export default function SessionDetailModal({ logId, onClose }: SessionDetailModa
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-card-border bg-input-bg/30 flex justify-end gap-3">
+        <div className="p-6 border-t border-card-border bg-input-bg/30 flex justify-end gap-3 flex-wrap">
           <button
             onClick={onClose}
             className="px-5 py-2.5 rounded-xl font-medium text-brand-sage hover:bg-input-border transition-colors text-sm"
           >
             Tutup
           </button>
-          <button
-            onClick={handleExportCSV}
-            disabled={loading || !data || data.totalReadings === 0}
-            className="flex items-center gap-2 bg-brand-green hover:bg-brand-green700 text-white px-5 py-2.5 rounded-xl font-medium transition-colors text-sm shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            <Download className="w-4 h-4" />
-            Export Raw CSV
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleExportDownsampledCSV}
+              disabled={loading || !data || !data.downsampled || data.downsampled.length === 0}
+              className="flex items-center gap-2 bg-brand-green50 hover:bg-brand-green/20 text-brand-green px-5 py-2.5 rounded-xl font-medium transition-colors text-sm shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Download className="w-4 h-4" />
+              Export Downsampled CSV
+            </button>
+            <button
+              onClick={handleExportCSV}
+              disabled={loading || !data || !data.raw || data.totalReadings === 0}
+              className="flex items-center gap-2 bg-brand-green hover:bg-brand-green700 text-white px-5 py-2.5 rounded-xl font-medium transition-colors text-sm shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Download className="w-4 h-4" />
+              Export Raw CSV
+            </button>
+          </div>
         </div>
       </div>
     </div>

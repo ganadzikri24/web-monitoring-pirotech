@@ -26,7 +26,7 @@ function ProfilContent() {
   const [activeTab, setActiveTab] = useState(initialTab);
 
   // Profile Form States
-  const [displayName, setDisplayName] = useState("");
+  const [profileUsername, setProfileUsername] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -49,7 +49,15 @@ function ProfilContent() {
 
   useEffect(() => {
     if (user) {
-      setDisplayName(user.displayName || "");
+      const getUsername = async () => {
+        try {
+          const idTokenResult = await user.getIdTokenResult();
+          setProfileUsername(idTokenResult.claims.username || "");
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      getUsername();
     }
   }, [user]);
 
@@ -91,8 +99,24 @@ function ProfilContent() {
     try {
       let hasChanges = false;
 
-      if (displayName !== (user.displayName || "")) {
-        await updateProfile(user, { displayName });
+      // Update username via API jika berubah
+      const idTokenResult = await user.getIdTokenResult();
+      const currentUsername = idTokenResult.claims.username || "";
+      
+      if (profileUsername !== currentUsername) {
+        const res = await fetch(`/api/users/${user.uid}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: profileUsername }),
+        });
+        
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || "Gagal memperbarui username");
+        }
+        
+        // Refresh token agar claims baru segera aktif di frontend
+        await user.getIdToken(true);
         hasChanges = true;
       }
 
@@ -205,6 +229,29 @@ function ProfilContent() {
     }
   };
 
+  const handleUpdateRole = async (uid: string, newRole: string) => {
+    setUsersError("");
+    setUsersMessage("");
+    try {
+      const res = await fetch(`/api/users/${uid}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ role: newRole }),
+      });
+      
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Gagal mengubah role pengguna");
+      }
+      
+      setUsersMessage(`✅ Role berhasil diperbarui.`);
+      setTimeout(() => setUsersMessage(""), 5000);
+      await fetchUsers();
+    } catch (err: any) {
+      setUsersError(err.message);
+    }
+  };
+
   if (roleLoading) {
     return (
       <div className="flex justify-center items-center py-20">
@@ -279,12 +326,12 @@ function ProfilContent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1.5">Nama Lengkap</label>
+                <label className="block text-sm font-medium mb-1.5">Username</label>
                 <input
                   type="text"
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  placeholder="Masukkan nama lengkap Anda"
+                  value={profileUsername}
+                  onChange={(e) => setProfileUsername(e.target.value.replace(/\s/g, ''))}
+                  placeholder="Masukkan username Anda"
                   className="w-full px-4 py-2.5 rounded-xl border border-input-border bg-input-bg focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green transition-all"
                 />
               </div>
@@ -471,11 +518,26 @@ function ProfilContent() {
                           )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`px-2.5 py-1 text-xs rounded-full font-medium ${
-                            u.role === 'admin' ? 'bg-brand-green100 text-brand-green700' : 'bg-gray-100 text-gray-700'
-                          }`}>
-                            {u.role}
-                          </span>
+                          {u.uid === user?.uid ? (
+                            <span className={`px-2.5 py-1 text-xs rounded-full font-medium ${
+                              u.role === 'admin' ? 'bg-brand-green100 text-brand-green700' : 'bg-gray-100 text-gray-700'
+                            }`}>
+                              {u.role}
+                            </span>
+                          ) : (
+                            <select
+                              value={u.role}
+                              onChange={(e) => handleUpdateRole(u.uid, e.target.value)}
+                              className={`px-2 py-1 text-xs rounded-lg font-medium border focus:ring-2 focus:ring-brand-green/20 ${
+                                u.role === 'admin' 
+                                  ? 'bg-brand-green50 text-brand-green700 border-brand-green/20' 
+                                  : 'bg-gray-50 text-gray-700 border-gray-200'
+                              }`}
+                            >
+                              <option value="operator">operator</option>
+                              <option value="admin">admin</option>
+                            </select>
+                          )}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-right text-sm">
                           {u.uid !== user?.uid && (

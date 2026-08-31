@@ -8,7 +8,7 @@ export async function GET() {
       uid: userRecord.uid,
       email: userRecord.email,
       displayName: userRecord.displayName || '',
-      role: userRecord.customClaims?.role || 'guest',
+      role: userRecord.customClaims?.role || 'operator',
       username: userRecord.customClaims?.username || '',
       creationTime: userRecord.metadata.creationTime,
       lastSignInTime: userRecord.metadata.lastSignInTime,
@@ -27,6 +27,11 @@ export async function POST(request: Request) {
 
     if (!email || !password) {
       return NextResponse.json({ error: 'Email dan password wajib diisi' }, { status: 400 });
+    }
+
+    // Validasi username tidak boleh mengandung spasi
+    if (username && /\s/.test(username)) {
+      return NextResponse.json({ error: 'Username tidak boleh mengandung spasi' }, { status: 400 });
     }
 
     // Validasi username unik jika disediakan

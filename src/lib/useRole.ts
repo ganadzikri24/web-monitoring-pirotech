@@ -5,10 +5,11 @@ import { auth } from "./firebase";
 
 import { User } from "firebase/auth";
 
-export type UserRole = 'admin' | 'operator' | 'guest';
+export type UserRole = 'admin' | 'operator' | null;
 
 export const useRole = () => {
-  const [role, setRole] = useState<UserRole>('guest');
+  const [role, setRole] = useState<UserRole>(null);
+  const [username, setUsername] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
 
@@ -19,14 +20,18 @@ export const useRole = () => {
         try {
           const idTokenResult = await currentUser.getIdTokenResult();
           const userRole = idTokenResult.claims.role as UserRole;
+          const userUsername = idTokenResult.claims.username as string;
           setRole(userRole || 'operator'); // default to operator if no specific claim but logged in
+          setUsername(userUsername || '');
         } catch (error) {
           console.error("Error fetching claims", error);
-          setRole('guest');
+          setRole(null);
+          setUsername('');
         }
       } else {
         setUser(null);
-        setRole('guest');
+        setRole(null);
+        setUsername('');
       }
       setLoading(false);
     });
@@ -34,5 +39,5 @@ export const useRole = () => {
     return () => unsubscribe();
   }, []);
 
-  return { role, loading, isAdmin: role === 'admin', user };
+  return { role, username, loading, isAdmin: role === 'admin', user };
 };
