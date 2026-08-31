@@ -5,10 +5,13 @@ import ThemeToggle from "./ThemeToggle";
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useRole } from "@/lib/useRole";
 
 export default function Topbar({ onMenuClick = () => {} }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showResults, setShowResults] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const { user, isAdmin } = useRole();
   const router = useRouter();
 
   const menuItems = [
@@ -91,16 +94,64 @@ export default function Topbar({ onMenuClick = () => {} }) {
           <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full border-2 border-card-bg" />
         </button>
 
-        <div className="flex items-center gap-3 pl-4 border-l border-card-border">
-          <div className="text-right hidden sm:block">
-            <p className="text-sm font-bold text-brand-green700">
-              Admin PiRoTech
-            </p>
-            <p className="text-xs text-brand-sage">admin@pirotech.id</p>
-          </div>
-          <div className="w-9 h-9 rounded-full bg-brand-green50 flex items-center justify-center text-brand-green border border-brand-green/20">
-            <User className="w-4 h-4" />
-          </div>
+        <div className="relative">
+          <button 
+            onClick={() => setShowProfileMenu(!showProfileMenu)}
+            className="flex items-center gap-3 pl-4 border-l border-card-border hover:opacity-80 transition-opacity"
+          >
+            <div className="text-right hidden sm:block">
+              <p className="text-sm font-bold text-brand-green700">
+                {user?.displayName || "Pengguna PiRoTech"}
+              </p>
+              <p className="text-xs text-brand-sage">{user?.email || "Memuat..."}</p>
+            </div>
+            <div className="w-9 h-9 rounded-full bg-brand-green50 flex items-center justify-center text-brand-green border border-brand-green/20">
+              <User className="w-4 h-4" />
+            </div>
+          </button>
+          
+          {showProfileMenu && (
+            <div className="absolute right-0 mt-3 w-48 bg-card-bg border border-card-border rounded-xl shadow-lg overflow-hidden z-50">
+              <div className="py-2">
+                <button
+                  onClick={() => {
+                    router.push("/profil");
+                    setShowProfileMenu(false);
+                  }}
+                  className="w-full text-left px-4 py-2.5 text-sm text-brand-sage hover:bg-brand-green50 hover:text-brand-green700 transition-colors"
+                >
+                  Profil Saya
+                </button>
+                {isAdmin && (
+                  <button
+                    onClick={() => {
+                      router.push("/profil?tab=pengguna");
+                      setShowProfileMenu(false);
+                    }}
+                    className="w-full text-left px-4 py-2.5 text-sm text-brand-sage hover:bg-brand-green50 hover:text-brand-green700 transition-colors"
+                  >
+                    Kelola Pengguna
+                  </button>
+                )}
+                <div className="h-px bg-card-border my-1" />
+                <button
+                  onClick={async () => {
+                    const { auth } = await import("@/lib/firebase");
+                    const { signOut } = await import("firebase/auth");
+                    try {
+                      await signOut(auth);
+                      window.location.href = "/";
+                    } catch (error) {
+                      console.error("Gagal logout:", error);
+                    }
+                  }}
+                  className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
+                >
+                  Keluar
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>

@@ -2,8 +2,6 @@ import { initializeApp, getApps, getApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
 import { getAuth } from "firebase/auth";
 
-const isMock = process.env.NEXT_PUBLIC_USE_MOCK_AUTH === "true";
-
 let app: any, db: any, auth: any;
 
 const firebaseConfig = {
@@ -20,17 +18,6 @@ const firebaseConfig = {
 app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 db = getDatabase(app);
 
-if (!isMock) {
-  auth = getAuth(app);
-} else {
-  auth = {
-    onIdTokenChanged: (callback: any) => {
-      // simulate no user logged in from Firebase's perspective, 
-      // since our mock auth uses localStorage instead
-      callback(null); 
-      return () => {}; // mock unsubscribe
-    }
-  };
-}
+auth = getAuth(app);
 
 export { app, db, auth };

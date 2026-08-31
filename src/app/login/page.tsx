@@ -6,6 +6,8 @@ import { Lock, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Logo from "@/components/Logo";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 export default function LoginPage() {
   const [loading, setLoading] = useState(false);
@@ -13,7 +15,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
+  const [emailOrUsername, setEmailOrUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -21,23 +23,28 @@ export default function LoginPage() {
     setLoading(true);
     setError(false);
 
-    if (process.env.NEXT_PUBLIC_USE_MOCK_AUTH === "true") {
-      if (email === "admin@pirotech.id" && password === "admin123") {
-        import("@/lib/mockAuth").then(({ setMockSession }) => {
-          setMockSession("admin");
-          router.push("/overview");
-        });
-      } else {
-        setError(true);
-        setLoading(false);
-      }
-      return;
-    }
+    try {
+      let loginEmail = emailOrUsername;
 
-    // Firebase Auth login (not yet implemented)
-    setTimeout(() => {
+      // Jika bukan format email, coba lookup username
+      if (!emailOrUsername.includes("@")) {
+        const res = await fetch(`/api/auth/lookup?username=${encodeURIComponent(emailOrUsername)}`);
+        if (!res.ok) {
+          setError(true);
+          setLoading(false);
+          return;
+        }
+        const data = await res.json();
+        loginEmail = data.email;
+      }
+
+      await signInWithEmailAndPassword(auth, loginEmail, password);
       router.push("/overview");
-    }, 1500);
+    } catch (err: any) {
+      console.error("Login failed", err);
+      setError(true);
+      setLoading(false);
+    }
   };
 
   return (
@@ -129,14 +136,14 @@ export default function LoginPage() {
 
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-brand-green700">
-                  Email
+                  Email / Username
                 </label>
                 <input
-                  type="email"
+                  type="text"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="masukan email"
+                  value={emailOrUsername}
+                  onChange={(e) => setEmailOrUsername(e.target.value)}
+                  placeholder="masukan email atau username"
                   className="w-full px-4 py-3.5 rounded-xl border border-input-border bg-input-bg text-foreground focus:outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green transition-all placeholder:text-muted-foreground"
                 />
               </div>

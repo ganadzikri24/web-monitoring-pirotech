@@ -14,6 +14,8 @@ import {
 import { clsx } from "clsx";
 import { motion, AnimatePresence } from "framer-motion";
 import Logo from "./Logo";
+import { auth } from "@/lib/firebase";
+import { signOut } from "firebase/auth";
 
 const menuItems = [
   { href: "/overview", label: "Overview", icon: LayoutDashboard },
@@ -106,15 +108,12 @@ export default function Sidebar({ isOpen = false, setIsOpen = (o: boolean) => {}
       <div className="p-4 border-t border-card-border">
         <button
           onClick={async () => {
-            // TODO: hapus mock auth & mock data setelah Firebase disetup
-            if (process.env.NEXT_PUBLIC_USE_MOCK_AUTH === "true") {
-              const { clearMockSession } = await import("@/lib/mockAuth");
-              clearMockSession();
+            try {
+              await signOut(auth);
               window.location.href = "/";
-              return;
+            } catch (error) {
+              console.error("Gagal logout:", error);
             }
-
-            // TODO: call actual firebase signOut here
           }}
           className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-brand-sage hover:bg-red-50 dark:hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 transition-colors font-medium text-sm cursor-pointer"
         >
