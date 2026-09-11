@@ -14,15 +14,26 @@ export interface ControlData {
 }
 
 /**
- * Dengarkan perubahan data di node /monitoring secara realtime.
- * Fungsi ini mengembalikan fungsi `unsubscribe` untuk menghentikan listener.
+ * Dengarkan perubahan data di node /sensor_data secara realtime (mengambil data terbaru).
  */
+import { query, limitToLast } from "firebase/database";
+
 export function listenToMonitoring(callback: (data: MonitoringData | null) => void) {
-  const monitoringRef = ref(db, 'monitoring');
+  const monitoringRef = query(ref(db, 'sensor_data'), limitToLast(1));
   
   const unsubscribe = onValue(monitoringRef, (snapshot) => {
     if (snapshot.exists()) {
-      callback(snapshot.val() as MonitoringData);
+      const dataObj = snapshot.val();
+      const key = Object.keys(dataObj)[0];
+      const data = dataObj[key];
+
+      const mappedData: MonitoringData = {
+        suhu: data.temperature_c || 0,
+        tekanan: data.pressure_bar || 0,
+        status: data.status || 'IDLE'
+      };
+
+      callback(mappedData);
     } else {
       callback(null);
     }

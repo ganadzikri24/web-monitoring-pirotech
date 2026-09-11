@@ -65,7 +65,7 @@
       ".write": true
     },
     "control": {
-      ".read": "auth != null",
+      ".read": true,
       ".write": "auth != null"
     },
     "users": {

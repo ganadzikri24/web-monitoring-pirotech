@@ -7,7 +7,7 @@ import ProcessTimer from "@/components/overview/ProcessTimer";
 import { useEffect, useState } from "react";
 import { listenToMonitoring, MonitoringData } from "@/lib/firebaseUtils";
 import { getRunningBatch } from "@/lib/mockData";
-import type { Batch } from "@/lib/types";
+import { useRole } from "@/lib/useRole";
 
 export default function DashboardPage() {
   const [runningBatch, setRunningBatch] = useState<Batch | null>(null);

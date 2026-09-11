@@ -4,6 +4,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { mockChartData } from '@/lib/mockData';
+import { useRole } from "@/lib/useRole";
 
 export default function RealtimeChart() {
   const { resolvedTheme } = useTheme();
