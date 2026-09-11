@@ -9,52 +9,95 @@ import ProcessTimer from "@/components/overview/ProcessTimer";
 import PyrolysisProcessAnimation from "@/components/overview/PyrolysisProcessAnimation";
 import { calculateEstimatedYield } from "@/lib/calculations";
 import { getRunningBatch, startNewBatch, pauseBatch, resumeBatch, stopBatch } from "@/lib/mockData";
+import { 
+  getRunningFirebaseBatch, 
+  startFirebaseBatch, 
+  pauseFirebaseBatch, 
+  resumeFirebaseBatch, 
+  stopFirebaseBatch 
+} from "@/lib/firebaseUtils";
 import type { Batch } from "@/lib/types";
 
 export default function OverviewPage() {
   const [weight, setWeight] = useState("");
   const [type, setType] = useState("");
-  const [batch, setBatch] = useState<Batch | null>(null);
+  // Note: For firebase batches, we might have an 'id' attached to it
+  const [batch, setBatch] = useState<(Batch & { id?: string }) | null>(null);
+
+  const isMock = process.env.NEXT_PUBLIC_USE_MOCK_AUTH === "true";
 
   useEffect(() => {
     const loadBatch = async () => {
-      if (process.env.NEXT_PUBLIC_USE_MOCK_AUTH === "true") {
+      if (isMock) {
         const b = await getRunningBatch();
         setBatch(b);
+      } else {
+        const fb = await getRunningFirebaseBatch();
+        setBatch(fb);
       }
     };
     loadBatch();
     const interval = setInterval(loadBatch, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [isMock]);
 
   const handleStart = async () => {
     const numWeight = parseFloat(weight);
     if (!numWeight || !type) return;
-    if (process.env.NEXT_PUBLIC_USE_MOCK_AUTH === "true") {
+    
+    if (isMock) {
       const newBatch = await startNewBatch(numWeight, type, "admin");
+      setBatch(newBatch);
+    } else {
+      const newBatch = await startFirebaseBatch(numWeight, type, "admin");
       setBatch(newBatch);
     }
   };
 
   const handlePause = async () => {
-    if (process.env.NEXT_PUBLIC_USE_MOCK_AUTH === "true") {
+    if (isMock) {
       const updated = await pauseBatch();
       if (updated) setBatch(updated);
+    } else if (batch && batch.id) {
+      const currentMs = batch.accumulatedMs || 0;
+      const additionalMs = Date.now() - batch.startTs;
+      const totalAccumulated = currentMs + additionalMs;
+      
+      const success = await pauseFirebaseBatch(batch.id, totalAccumulated);
+      if (success) {
+        setBatch({ ...batch, status: "paused", pausedAt: Date.now(), accumulatedMs: totalAccumulated });
+      }
     }
   };
 
   const handleResume = async () => {
-    if (process.env.NEXT_PUBLIC_USE_MOCK_AUTH === "true") {
+    if (isMock) {
       const updated = await resumeBatch();
       if (updated) setBatch(updated);
+    } else if (batch && batch.id) {
+      const success = await resumeFirebaseBatch(batch.id);
+      if (success) {
+        setBatch({ ...batch, status: "running", startTs: Date.now(), pausedAt: undefined });
+      }
     }
   };
 
   const handleStop = async () => {
-    if (process.env.NEXT_PUBLIC_USE_MOCK_AUTH === "true") {
+    if (isMock) {
       const completed = await stopBatch();
       if (completed) setBatch(null); // Clear — it's now in the log
+    } else if (batch && batch.id) {
+      let totalAccumulated = batch.accumulatedMs || 0;
+      if (batch.status === "running") {
+        totalAccumulated += Date.now() - batch.startTs;
+      }
+      
+      const numWeight = batch.wasteKg || 0;
+      const t = batch.plasticType || "mix";
+      const { fuelLiters } = calculateEstimatedYield(numWeight, t);
+
+      const success = await stopFirebaseBatch(batch.id, totalAccumulated, fuelLiters);
+      if (success) setBatch(null);
     }
   };
 

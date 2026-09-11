@@ -1,55 +1,92 @@
 "use client";
 
-import { Thermometer, Timer, Activity, Flame } from "lucide-react";
+import { Thermometer, Timer, Activity, Flame, AlertTriangle } from "lucide-react";
 import RealtimeChart from "@/components/RealtimeChart";
 import BuzzerControl from "@/components/BuzzerControl";
 import ProcessTimer from "@/components/overview/ProcessTimer";
 import { useEffect, useState } from "react";
-import { listenToMonitoring, MonitoringData } from "@/lib/firebaseUtils";
+import { listenToMonitoring, MonitoringData, listenToConfig, ConfigData } from "@/lib/firebaseUtils";
 import { getRunningBatch } from "@/lib/mockData";
 import { useRole } from "@/lib/useRole";
+import { motion, AnimatePresence } from "framer-motion";
+import type { Batch } from "@/lib/types";
 
 export default function DashboardPage() {
   const [runningBatch, setRunningBatch] = useState<Batch | null>(null);
   const [monitoringData, setMonitoringData] = useState<MonitoringData | null>(null);
+  const [config, setConfig] = useState<ConfigData>({ overheat_limit: 50, warning_percent: 90 });
+  const [showWarning, setShowWarning] = useState(false);
 
   useEffect(() => {
-    // We still keep the mock batch for the timer since Firebase RTDB 
-    // doesn't have the batch start time logic yet.
     const loadBatch = async () => {
       const batch = await getRunningBatch();
       setRunningBatch(batch);
     };
     loadBatch();
     
-    // Subscribe to Firebase RTDB for real telemetry
-    const unsubscribe = listenToMonitoring((data) => {
-      if (data) {
-        setMonitoringData(data);
-      }
+    const unsubscribeConfig = listenToConfig((conf) => {
+      if (conf) setConfig(conf);
     });
 
-    return () => unsubscribe();
+    const unsubscribeData = listenToMonitoring((data) => {
+      setMonitoringData(data);
+    });
+
+    return () => {
+      unsubscribeConfig();
+      unsubscribeData();
+    };
   }, []);
 
-  const tempC = monitoringData?.suhu || 0;
+  const tempC = monitoringData ? monitoringData.suhu : null;
   const isPaused = runningBatch?.status === "paused";
+  const isDisconnected = monitoringData === null;
   
+  // Warning Logic
+  useEffect(() => {
+    if (tempC !== null && config) {
+      const warningThreshold = (config.warning_percent / 100) * config.overheat_limit;
+      if (tempC >= warningThreshold && tempC < config.overheat_limit) {
+        setShowWarning(true);
+      } else {
+        setShowWarning(false);
+      }
+    } else {
+      setShowWarning(false);
+    }
+  }, [tempC, config]);
+
   // Use status from Firebase if available, otherwise fallback
-  const status = isPaused 
-    ? "PAUSED" 
-    : (monitoringData?.status?.toUpperCase() || (runningBatch ? "PYROLYSIS" : "IDLE"));
+  const status = isDisconnected 
+    ? "PERANGKAT MATI" 
+    : isPaused 
+      ? "PAUSED" 
+      : (monitoringData?.status?.toUpperCase() || (runningBatch ? "PYROLYSIS" : "IDLE"));
 
   // Determine status styles
-  let statusBadge = "";
-  if (status === "IDLE") statusBadge = "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300";
+  let statusBadge = "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"; // IDLE
+  if (status === "PERANGKAT MATI") statusBadge = "bg-red-100 text-red-700 dark:bg-red-500/20 dark:text-red-500";
   if (status === "HEATING") statusBadge = "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-500";
   if (status === "PYROLYSIS") statusBadge = "bg-brand-green50 text-brand-green700 dark:bg-brand-green/20 dark:text-brand-green";
   if (status === "COOLING") statusBadge = "bg-blue-100 text-blue-700 dark:bg-blue-500/20 dark:text-blue-400";
-  if (status === "PAUSED") statusBadge = "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400"; // yellow/amber for paused
+  if (status === "PAUSED") statusBadge = "bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400";
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto pb-10">
+    <div className="space-y-8 max-w-7xl mx-auto pb-10 relative">
+      <AnimatePresence>
+        {showWarning && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-amber-500 text-white px-6 py-3 rounded-full shadow-lg flex items-center gap-3 font-bold"
+          >
+            <AlertTriangle className="w-5 h-5 animate-pulse" />
+            Peringatan: Suhu mencapai batas Warning ({tempC?.toFixed(1)}°C)
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div>
         <h1 className="text-3xl font-bold text-brand-green700 mb-2 tracking-tight">Dashboard Monitoring</h1>
         <p className="text-brand-sage leading-relaxed">
@@ -69,13 +106,21 @@ export default function DashboardPage() {
               </div>
               <div className="flex items-end gap-2">
                 <span className="text-3xl font-bold text-brand-green700">
-                  {tempC.toFixed(1)}
+                  {tempC !== null ? tempC.toFixed(1) : "-"}
                 </span>
                 <span className="text-brand-sage font-medium mb-1">°C</span>
               </div>
               <p className="text-[11px] text-brand-green mt-2 font-medium flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-brand-green"></span>
-                Dalam ambang aman
+                {isDisconnected ? (
+                  <span className="text-red-500">Koneksi Terputus</span>
+                ) : tempC !== null && tempC >= config.overheat_limit ? (
+                  <span className="text-red-500">Overheat!</span>
+                ) : (
+                  <>
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-green"></span>
+                    Dalam ambang aman
+                  </>
+                )}
               </p>
             </div>
 
@@ -134,11 +179,6 @@ export default function DashboardPage() {
             
             <div className="flex-1 w-full min-h-0">
               <RealtimeChart />
-            </div>
-            
-            <div className="flex items-center justify-between mt-6 pt-4 border-t border-card-border text-xs">
-              <p className="text-brand-sage">Total Sampel: <span className="font-semibold text-brand-green700">1.240 data</span></p>
-              <p className="text-brand-sage">Puncak Tertinggi: <span className="font-semibold text-brand-green700">415.2 °C</span></p>
             </div>
           </div>
         </div>

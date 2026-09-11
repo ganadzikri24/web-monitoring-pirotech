@@ -32,11 +32,11 @@ export default function BuzzerControl() {
       <div className="flex items-center justify-between mb-8">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-brand-green50 text-brand-green flex items-center justify-center shrink-0">
-            <Volume2 className="w-5 h-5" />
+            <VolumeX className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-brand-green700">Kontrol Buzzer Manual</h2>
-            <p className="text-xs text-brand-sage">Nyalakan/matikan alarm darurat.</p>
+            <h2 className="text-lg font-bold text-brand-green700">Menu Silent Buzzer</h2>
+            <p className="text-xs text-brand-sage">Kontrol izin sistem untuk menyalakan buzzer.</p>
           </div>
         </div>
       </div>
@@ -49,25 +49,25 @@ export default function BuzzerControl() {
           whileTap={{ scale: 0.95 }}
           className={`relative w-40 h-40 rounded-full flex flex-col items-center justify-center gap-2 transition-colors shadow-lg cursor-pointer ${
             buzzer 
-              ? 'bg-red-500 text-white shadow-red-500/30' 
+              ? 'bg-brand-green hover:bg-brand-green700 text-white shadow-brand-green/30' 
               : 'bg-input-bg border-4 border-card-border text-brand-sage hover:text-foreground'
           }`}
         >
           {buzzer && (
-            <span className="absolute inset-0 rounded-full animate-ping border-4 border-red-500 opacity-20"></span>
+            <span className="absolute inset-0 rounded-full animate-ping border-4 border-brand-green opacity-20"></span>
           )}
           {buzzer ? <Volume2 className="w-12 h-12 mb-1" /> : <VolumeX className="w-12 h-12 mb-1" />}
-          <span className="font-bold text-xl">{buzzer ? 'ON' : 'OFF'}</span>
+          <span className="font-bold text-xl">{buzzer ? 'AKTIF' : 'SILENT'}</span>
         </motion.button>
 
         <div className="mt-8 text-center px-4">
           {buzzer ? (
-            <p className="text-sm font-bold text-red-600 dark:text-red-400 flex items-center justify-center gap-2">
-              <AlertTriangle className="w-4 h-4" /> Buzzer sedang berbunyi!
+            <p className="text-sm font-medium text-brand-green700 dark:text-brand-green">
+              Buzzer <strong>Aktif</strong> (Diizinkan berbunyi saat Overheat)
             </p>
           ) : (
-            <p className="text-sm font-medium text-brand-sage">
-              Tekan tombol untuk membunyikan alarm manual.
+            <p className="text-sm font-bold text-red-600 dark:text-red-400 flex items-center justify-center gap-2">
+              <VolumeX className="w-4 h-4" /> Buzzer dimatikan (Silent Mode)
             </p>
           )}
         </div>

@@ -1,27 +1,39 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Settings } from "lucide-react";
 import { motion } from "framer-motion";
+import { listenToConfig, updateConfig, ConfigData } from "@/lib/firebaseUtils";
 
 export default function ThresholdConfig() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [minTemp, setMinTemp] = useState(20);
-  const [maxTemp, setMaxTemp] = useState(450);
-  const [buzzerMax, setBuzzerMax] = useState(400);
+  
+  const [overheatLimit, setOverheatLimit] = useState(50);
+  const [initialLoad, setInitialLoad] = useState(true);
 
-  const handleSave = (e: React.FormEvent) => {
+  useEffect(() => {
+    const unsubscribe = listenToConfig((config: ConfigData | null) => {
+      if (config) {
+        setOverheatLimit(config.overheat_limit || 50);
+      }
+      setInitialLoad(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setSuccess(false);
     
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
+    const success = await updateConfig({ overheat_limit: overheatLimit });
+    
+    setLoading(false);
+    if (success) {
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
-    }, 1000);
+    }
   };
 
   return (
@@ -37,39 +49,16 @@ export default function ThresholdConfig() {
       </div>
 
       <form onSubmit={handleSave} className="space-y-8 flex-1 flex flex-col">
-        <div className="space-y-5">
-          <h3 className="font-bold text-sm text-brand-green700 border-b border-card-border pb-2">Batas Suhu Normal</h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-brand-sage">Suhu Min (°C)</label>
-              <input 
-                type="number" 
-                value={minTemp}
-                onChange={(e) => setMinTemp(Number(e.target.value))}
-                className="w-full px-4 py-3 rounded-xl border border-input-border bg-input-bg focus:outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green transition-all" 
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-brand-sage">Suhu Maks (°C)</label>
-              <input 
-                type="number" 
-                value={maxTemp}
-                onChange={(e) => setMaxTemp(Number(e.target.value))}
-                className="w-full px-4 py-3 rounded-xl border border-input-border bg-input-bg focus:outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green transition-all" 
-              />
-            </div>
-          </div>
-        </div>
-
         <div className="space-y-5 flex-1">
-          <h3 className="font-bold text-sm text-brand-green700 border-b border-card-border pb-2">Peringatan Alarm (Buzzer)</h3>
+          <h3 className="font-bold text-sm text-brand-green700 border-b border-card-border pb-2">Peringatan Alarm (Overheat Limit)</h3>
           <div className="space-y-2">
             <label className="text-sm font-semibold text-brand-sage">Nyalakan alarm jika suhu &gt; ... °C</label>
             <input 
               type="number" 
-              value={buzzerMax}
-              onChange={(e) => setBuzzerMax(Number(e.target.value))}
-              className="w-full px-4 py-3 rounded-xl border border-input-border bg-input-bg focus:outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green transition-all" 
+              disabled={initialLoad}
+              value={overheatLimit}
+              onChange={(e) => setOverheatLimit(Number(e.target.value))}
+              className="w-full px-4 py-3 rounded-xl border border-input-border bg-input-bg focus:outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green transition-all disabled:opacity-50" 
             />
             <p className="text-xs text-brand-sage/70 leading-relaxed mt-1">
               Buzzer akan berbunyi secara otomatis saat suhu melewati batas ini.
@@ -90,7 +79,7 @@ export default function ThresholdConfig() {
 
           <button 
             type="submit"
-            disabled={loading}
+            disabled={loading || initialLoad}
             className="w-full bg-brand-green hover:bg-brand-green700 disabled:opacity-70 text-white font-bold py-3.5 rounded-xl transition-all shadow-sm flex justify-center items-center gap-2 cursor-pointer"
           >
             {loading ? (
@@ -108,3 +97,4 @@ export default function ThresholdConfig() {
     </div>
   );
 }
+

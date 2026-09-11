@@ -1,27 +1,45 @@
 "use client";
 
 import { BellRing, Smartphone, Mail, AlertTriangle } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { listenToConfig, updateConfig, ConfigData } from "@/lib/firebaseUtils";
 
 export default function NotificationPanel() {
-  const isMock = process.env.NEXT_PUBLIC_USE_MOCK_AUTH === "true";
-  const [fcm, setFcm] = useState(isMock ? true : true);
-  const [email, setEmail] = useState(isMock ? false : false);
+  const [fcm, setFcm] = useState(true);
+  const [email, setEmail] = useState(false);
   const [warningPercent, setWarningPercent] = useState(90);
+  
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(true);
 
-  const handleSave = (e: React.FormEvent) => {
+  useEffect(() => {
+    const unsubscribe = listenToConfig((config: ConfigData | null) => {
+      if (config) {
+        setWarningPercent(config.warning_percent || 90);
+        setFcm(config.push_enabled ?? true);
+      }
+      setInitialLoad(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setSuccess(false);
     
-    setTimeout(() => {
-      setLoading(false);
+    const success = await updateConfig({ 
+      warning_percent: warningPercent,
+      push_enabled: fcm 
+    });
+    
+    setLoading(false);
+    if (success) {
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
-    }, 1000);
+    }
   };
 
   return (
@@ -48,20 +66,20 @@ export default function NotificationPanel() {
               </div>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" className="sr-only peer" checked={fcm} onChange={() => setFcm(!fcm)} />
+              <input type="checkbox" disabled={initialLoad} className="sr-only peer" checked={fcm} onChange={() => setFcm(!fcm)} />
               <div className="w-11 h-6 bg-card-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-green"></div>
             </label>
           </div>
 
-          <div className="flex items-center justify-between p-3 rounded-xl hover:bg-input-bg transition-colors">
+          <div className="flex items-center justify-between p-3 rounded-xl hover:bg-input-bg transition-colors opacity-50 cursor-not-allowed" title="Fitur Email belum tersedia">
             <div className="flex items-center gap-3">
               <Mail className="w-5 h-5 text-brand-sage" />
               <div>
                 <p className="font-semibold text-brand-green700 text-sm">Notifikasi Email</p>
               </div>
             </div>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" className="sr-only peer" checked={email} onChange={() => setEmail(!email)} />
+            <label className="relative inline-flex items-center cursor-not-allowed">
+              <input type="checkbox" disabled className="sr-only peer" checked={email} onChange={() => setEmail(!email)} />
               <div className="w-11 h-6 bg-card-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-brand-green"></div>
             </label>
           </div>
@@ -74,9 +92,10 @@ export default function NotificationPanel() {
             <div className="flex items-center gap-3">
               <input 
                 type="number" 
+                disabled={initialLoad}
                 value={warningPercent}
                 onChange={(e) => setWarningPercent(Number(e.target.value))}
-                className="w-24 px-4 py-3 rounded-xl border border-input-border bg-input-bg focus:outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green transition-all"
+                className="w-24 px-4 py-3 rounded-xl border border-input-border bg-input-bg focus:outline-none focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green transition-all disabled:opacity-50"
               />
               <span className="text-lg font-bold text-brand-green700">%</span>
             </div>
@@ -115,7 +134,7 @@ export default function NotificationPanel() {
 
           <button 
             type="submit"
-            disabled={loading}
+            disabled={loading || initialLoad}
             className="w-full bg-brand-green hover:bg-brand-green700 disabled:opacity-70 text-white font-bold py-3.5 rounded-xl transition-all shadow-sm flex justify-center items-center gap-2 cursor-pointer"
           >
             {loading ? (
