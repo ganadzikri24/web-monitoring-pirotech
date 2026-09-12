@@ -133,27 +133,7 @@ export default function OverviewPage() {
           </p>
         </div>
 
-        {isActive && (
-          <div className="bg-card-bg border border-card-border px-4 py-3 rounded-xl shadow-sm flex items-center gap-4">
-            <div>
-              <p className="text-xs font-semibold text-brand-sage uppercase tracking-wider mb-0.5">
-                {isPaused ? "Dijeda" : "Waktu Berjalan"}
-              </p>
-              <ProcessTimer
-                startTs={batch.startTs}
-                pausedAt={batch.pausedAt}
-                accumulatedMs={batch.accumulatedMs || 0}
-                size="sm"
-                className="text-brand-green700"
-              />
-            </div>
-            {isPaused && (
-              <span className="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 text-xs font-bold">
-                DIJEDA
-              </span>
-            )}
-          </div>
-        )}
+
       </div>
 
       <div className="grid lg:grid-cols-12 gap-8">
@@ -181,6 +161,35 @@ export default function OverviewPage() {
         </div>
 
         <div className="lg:col-span-7 flex flex-col gap-6">
+          {isActive && (
+            <div className="bg-brand-green700 p-6 rounded-2xl shadow-sm border border-brand-green relative overflow-hidden flex flex-col md:flex-row items-center justify-between text-white">
+              <div className="absolute right-0 top-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/4 pointer-events-none" />
+              <div>
+                <p className="text-sm font-semibold text-brand-green50 uppercase tracking-wider mb-1 flex items-center gap-2">
+                  <span className="relative flex h-3 w-3">
+                    {!isPaused && <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-green50 opacity-75"></span>}
+                    <span className={`relative inline-flex rounded-full h-3 w-3 ${isPaused ? 'bg-amber-400' : 'bg-brand-green50'}`}></span>
+                  </span>
+                  {isPaused ? "Proses Dijeda" : "Waktu Berjalan"}
+                </p>
+                <div className="mt-2">
+                  <ProcessTimer
+                    startTs={batch.startTs}
+                    pausedAt={batch.pausedAt}
+                    accumulatedMs={batch.accumulatedMs || 0}
+                    size="lg"
+                    className="text-white text-4xl"
+                  />
+                </div>
+              </div>
+              {isPaused && (
+                <span className="mt-4 md:mt-0 px-4 py-1.5 rounded-full bg-amber-500/30 border border-amber-500/50 text-amber-300 text-sm font-bold shadow-sm">
+                  DIJEDA
+                </span>
+              )}
+            </div>
+          )}
+
           <div className="flex-1">
             <EstimationCard
               fuelLiters={fuelLiters}

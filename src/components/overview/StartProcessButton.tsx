@@ -54,72 +54,72 @@ export default function StartProcessButton({
           )}
         </div>
 
-        {/* Control buttons */}
-        <div className="grid grid-cols-2 gap-3 relative">
-          {/* Pause / Resume */}
-          {isPaused ? (
-            <motion.button
+        {/* Control buttons or Confirmation */}
+        <AnimatePresence mode="wait">
+          {!showStopConfirm ? (
+            <motion.div
+              key="controls"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              onClick={onResume}
-              className="py-3.5 rounded-xl font-bold text-sm bg-brand-green hover:bg-brand-green700 text-white transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+              exit={{ opacity: 0 }}
+              className="grid grid-cols-2 gap-3"
             >
-              <Play className="w-4 h-4" /> Lanjutkan
-            </motion.button>
-          ) : (
-            <motion.button
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              onClick={onPause}
-              className="py-3.5 rounded-xl font-bold text-sm bg-amber-500 hover:bg-amber-600 text-white transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <Pause className="w-4 h-4" /> Jeda
-            </motion.button>
-          )}
+              {/* Pause / Resume */}
+              {isPaused ? (
+                <button
+                  onClick={onResume}
+                  className="py-3.5 rounded-xl font-bold text-sm bg-brand-green hover:bg-brand-green700 text-white transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Play className="w-4 h-4" /> Lanjutkan
+                </button>
+              ) : (
+                <button
+                  onClick={onPause}
+                  className="py-3.5 rounded-xl font-bold text-sm bg-amber-500 hover:bg-amber-600 text-white transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Pause className="w-4 h-4" /> Jeda
+                </button>
+              )}
 
-          {/* Stop */}
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            onClick={() => setShowStopConfirm(true)}
-            className="py-3.5 rounded-xl font-bold text-sm bg-red-500 hover:bg-red-600 text-white transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
-          >
-            <Square className="w-4 h-4" /> Selesaikan
-          </motion.button>
-
-          {/* Stop confirmation overlay */}
-          <AnimatePresence>
-            {showStopConfirm && (
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="absolute inset-0 bg-card-bg border border-red-300 dark:border-red-500/30 shadow-lg rounded-xl p-4 z-10 flex flex-col justify-center"
+              {/* Stop */}
+              <button
+                onClick={() => setShowStopConfirm(true)}
+                className="py-3.5 rounded-xl font-bold text-sm bg-red-500 hover:bg-red-600 text-white transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
               >
-                <p className="text-sm font-semibold text-red-600 dark:text-red-400 mb-3 text-center flex items-center justify-center gap-2">
-                  <AlertCircle className="w-4 h-4" /> Yakin ingin mengakhiri proses ini?
-                </p>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() => setShowStopConfirm(false)}
-                    className="py-2.5 rounded-lg border border-card-border text-brand-sage hover:bg-input-bg transition-colors text-sm font-medium cursor-pointer"
-                  >
-                    Batal
-                  </button>
-                  <button
-                    onClick={() => {
-                      setShowStopConfirm(false);
-                      onStop();
-                    }}
-                    className="py-2.5 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors text-sm font-bold flex items-center justify-center gap-1.5 cursor-pointer"
-                  >
-                    <CheckCircle2 className="w-4 h-4" /> Ya, Selesai
-                  </button>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+                <Square className="w-4 h-4" /> Selesaikan
+              </button>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="confirm"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="w-full bg-card-bg border border-red-300 dark:border-red-500/30 shadow-lg rounded-xl p-4 flex flex-col justify-center"
+            >
+              <p className="text-sm font-semibold text-red-600 dark:text-red-400 mb-3 text-center flex items-center justify-center gap-2">
+                <AlertCircle className="w-4 h-4" /> Yakin ingin mengakhiri proses ini?
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  onClick={() => setShowStopConfirm(false)}
+                  className="py-2.5 rounded-lg border border-card-border text-brand-sage hover:bg-input-bg transition-colors text-sm font-medium cursor-pointer"
+                >
+                  Batal
+                </button>
+                <button
+                  onClick={() => {
+                    setShowStopConfirm(false);
+                    onStop();
+                  }}
+                  className="py-2.5 rounded-lg bg-red-500 hover:bg-red-600 text-white transition-colors text-sm font-bold flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <CheckCircle2 className="w-4 h-4" /> Ya, Selesai
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     );
   }
