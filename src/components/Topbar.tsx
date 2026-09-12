@@ -1,30 +1,77 @@
 "use client";
 
-import { Bell, Search, User, Menu } from "lucide-react";
+import { Bell, Search, User, Menu, Info, AlertTriangle, CheckCircle, Flame } from "lucide-react";
 import ThemeToggle from "./ThemeToggle";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useRole } from "@/lib/useRole";
+import { listenToNotifications, NotificationData } from "@/lib/firebaseUtils";
+
+// Fungsi format waktu yang lalu
+function timeSince(date: number) {
+  const seconds = Math.floor((Date.now() - date) / 1000);
+  let interval = seconds / 31536000;
+  if (interval > 1) return Math.floor(interval) + " tahun yang lalu";
+  interval = seconds / 2592000;
+  if (interval > 1) return Math.floor(interval) + " bulan yang lalu";
+  interval = seconds / 86400;
+  if (interval > 1) return Math.floor(interval) + " hari yang lalu";
+  interval = seconds / 3600;
+  if (interval > 1) return Math.floor(interval) + " jam yang lalu";
+  interval = seconds / 60;
+  if (interval > 1) return Math.floor(interval) + " menit yang lalu";
+  return Math.floor(seconds) + " detik yang lalu";
+}
 
 export default function Topbar({ onMenuClick = () => {} }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [showResults, setShowResults] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState<NotificationData[]>([]);
   const { user, username, isAdmin } = useRole();
   const router = useRouter();
+
+  useEffect(() => {
+    // Ambil 3 notifikasi terakhir
+    const unsubscribe = listenToNotifications(3, (data) => {
+      setNotifications(data);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const menuItems = [
     { label: "Overview", href: "/overview" },
     { label: "Dashboard Monitoring", href: "/dashboard" },
     { label: "Log Activity", href: "/log-activity" },
     { label: "Pengaturan", href: "/pengaturan" },
+    { label: "Notifikasi", href: "/notifikasi" },
   ];
 
   const filteredMenus = menuItems.filter((item) =>
     item.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const getNotifIcon = (type: string) => {
+    switch (type) {
+      case "info": return <Info className="w-4 h-4 text-blue-500" />;
+      case "warning": return <AlertTriangle className="w-4 h-4 text-amber-500" />;
+      case "critical": return <Flame className="w-4 h-4 text-red-500" />;
+      case "success": return <CheckCircle className="w-4 h-4 text-brand-green" />;
+      default: return <Info className="w-4 h-4 text-brand-sage" />;
+    }
+  };
+
+  const getNotifColor = (type: string) => {
+    switch (type) {
+      case "info": return "text-blue-600";
+      case "warning": return "text-amber-600";
+      case "critical": return "text-red-600";
+      case "success": return "text-brand-green";
+      default: return "text-brand-sage";
+    }
+  };
 
   return (
     <header className="h-16 bg-card-bg border-b border-card-border flex items-center justify-between px-4 md:px-8 sticky top-0 z-30">
@@ -96,34 +143,40 @@ export default function Topbar({ onMenuClick = () => {} }) {
             className="relative text-brand-sage hover:text-brand-green700 transition-colors"
           >
             <Bell className="w-5 h-5" />
-            <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full border-2 border-card-bg" />
+            {notifications.length > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full border-2 border-card-bg" />
+            )}
           </button>
           
           {showNotifications && (
             <div className="absolute right-0 mt-3 w-80 bg-card-bg border border-card-border rounded-xl shadow-lg overflow-hidden z-50">
-              <div className="p-4 border-b border-card-border bg-input-bg/30">
-                <h3 className="font-bold text-sm text-brand-green700">Notifikasi</h3>
+              <div className="p-4 border-b border-card-border bg-input-bg/30 flex justify-between items-center">
+                <h3 className="font-bold text-sm text-brand-green700">Notifikasi Terbaru</h3>
               </div>
               <div className="max-h-80 overflow-y-auto">
-                <div className="p-3 border-b border-card-border/50 hover:bg-brand-green50/50 transition-colors">
-                  <p className="text-xs font-semibold text-red-600 mb-1">Peringatan Suhu</p>
-                  <p className="text-xs text-brand-sage">Suhu mesin mencapai 90% batas maksimal pada Batch #12.</p>
-                  <p className="text-[10px] text-brand-sage/70 mt-1">2 menit yang lalu</p>
-                </div>
-                <div className="p-3 border-b border-card-border/50 hover:bg-brand-green50/50 transition-colors">
-                  <p className="text-xs font-semibold text-brand-green mb-1">Buzzer Aktif</p>
-                  <p className="text-xs text-brand-sage">Buzzer menyala otomatis (Suhu Kritis Terdeteksi).</p>
-                  <p className="text-[10px] text-brand-sage/70 mt-1">5 menit yang lalu</p>
-                </div>
-                <div className="p-3 hover:bg-brand-green50/50 transition-colors">
-                  <p className="text-xs font-semibold text-brand-green700 mb-1">Aktivitas Akun</p>
-                  <p className="text-xs text-brand-sage">Login berhasil dari perangkat baru.</p>
-                  <p className="text-[10px] text-brand-sage/70 mt-1">1 jam yang lalu</p>
-                </div>
+                {notifications.length > 0 ? (
+                  notifications.map((notif) => (
+                    <div key={notif.id} className="p-3 border-b border-card-border/50 hover:bg-brand-green50/50 transition-colors">
+                      <div className="flex items-center gap-2 mb-1">
+                        {getNotifIcon(notif.type)}
+                        <p className={`text-xs font-semibold ${getNotifColor(notif.type)}`}>{notif.title}</p>
+                      </div>
+                      <p className="text-xs text-brand-sage leading-relaxed ml-6">{notif.message}</p>
+                      <p className="text-[10px] text-brand-sage/70 mt-1 ml-6">{timeSince(notif.timestamp)}</p>
+                    </div>
+                  ))
+                ) : (
+                  <div className="p-6 text-center">
+                    <p className="text-xs text-brand-sage">Belum ada notifikasi.</p>
+                  </div>
+                )}
               </div>
               <div className="p-2 border-t border-card-border bg-input-bg/30 text-center">
                 <button 
-                  onClick={() => router.push('/log-activity')}
+                  onClick={() => {
+                    setShowNotifications(false);
+                    router.push('/notifikasi');
+                  }}
                   className="text-xs font-semibold text-brand-green hover:text-brand-green700 transition-colors w-full p-2"
                 >
                   Lihat Semua Aktivitas

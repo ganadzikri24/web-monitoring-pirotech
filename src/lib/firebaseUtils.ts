@@ -15,6 +15,15 @@ export interface ConfigData {
   push_enabled?: boolean;
 }
 
+const PUSH_CHARS = '-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
+function decodePushId(id: string): number {
+  let time = 0;
+  for (let i = 0; i < 8; i++) {
+    time = time * 64 + PUSH_CHARS.indexOf(id.charAt(i));
+  }
+  return time;
+}
+
 /**
  * Dengarkan perubahan data di node /sensor_data secara realtime (mengambil data terbaru).
  * Akan memicu status "null" (Kosong/Mati) jika tidak ada data baru selama > 15 detik.
@@ -27,7 +36,6 @@ export function listenToMonitoring(callback: (data: MonitoringData | null) => vo
   const resetTimeout = () => {
     if (timeoutId) clearTimeout(timeoutId);
     timeoutId = setTimeout(() => {
-      // Timeout 15 detik, anggap ESP32 mati/terputus
       callback(null);
     }, 15000);
   };
@@ -37,8 +45,15 @@ export function listenToMonitoring(callback: (data: MonitoringData | null) => vo
     if (snapshot.exists()) {
       const dataObj = snapshot.val();
       const key = Object.keys(dataObj)[0];
-      const data = dataObj[key];
+      
+      // Deteksi instan: jika data terakhir umurnya > 15 detik, langsung buang!
+      const dataTimestamp = decodePushId(key);
+      if (Date.now() - dataTimestamp > 15000) {
+        callback(null);
+        return;
+      }
 
+      const data = dataObj[key];
       const mappedData: MonitoringData = {
         suhu: data.temperature_c || 0,
         tekanan: data.pressure_bar || 0,
@@ -191,17 +206,91 @@ export async function resumeFirebaseBatch(batchId: string): Promise<boolean> {
   }
 }
 
-export async function stopFirebaseBatch(batchId: string, currentAccumulatedMs: number, fuelLiters: number): Promise<boolean> {
+function formatDuration(ms: number) {
+  const totalSeconds = Math.floor(ms / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+export async function stopFirebaseBatch(batchId: string, currentAccumulatedMs: number, fuelLiters: number, weightKg: number, type: string): Promise<boolean> {
   try {
+    // 1. Update status batch yang berjalan menjadi completed
     await update(ref(db, `batches/${batchId}`), {
       status: "completed",
       endTs: Date.now(),
       accumulatedMs: currentAccumulatedMs,
       fuelLiters: fuelLiters,
     });
+    
+    // 2. Simpan hasil akhir ke log_activity
+    const dateObj = new Date();
+    // Format YYYY-MM-DD HH:mm:ss
+    const tanggalStr = dateObj.toISOString().replace('T', ' ').substring(0, 19);
+    
+    const logData = {
+      tanggal: tanggalStr,
+      berat_kg: weightKg,
+      jenis_plastik: type,
+      bbm_liter: fuelLiters,
+      durasi: formatDuration(currentAccumulatedMs)
+    };
+    
+    const logRef = push(ref(db, 'log_activity'));
+    await set(logRef, logData);
+    
     return true;
   } catch (e) {
     console.error(e);
     return false;
   }
+}
+
+// ============================================
+// LOGIC NOTIFICATIONS
+// ============================================
+
+export interface NotificationData {
+  id?: string;
+  title: string;
+  message: string;
+  type: "info" | "warning" | "success" | "critical";
+  timestamp: number;
+}
+
+export async function pushNotification(title: string, message: string, type: "info" | "warning" | "success" | "critical") {
+  try {
+    const notifRef = push(ref(db, 'notifications'));
+    await set(notifRef, {
+      title,
+      message,
+      type,
+      timestamp: Date.now()
+    });
+  } catch (err) {
+    console.error("Error pushing notification:", err);
+  }
+}
+
+export function listenToNotifications(limit: number, callback: (notifs: NotificationData[]) => void) {
+  // Ambil n notifikasi terakhir
+  const notifQuery = query(ref(db, 'notifications'), limitToLast(limit));
+  
+  const unsubscribe = onValue(notifQuery, (snapshot) => {
+    if (snapshot.exists()) {
+      const data = snapshot.val();
+      const parsed = Object.keys(data).map(key => ({
+        id: key,
+        ...data[key]
+      })) as NotificationData[];
+      // Urutkan dari yang terbaru
+      parsed.sort((a, b) => b.timestamp - a.timestamp);
+      callback(parsed);
+    } else {
+      callback([]);
+    }
+  });
+
+  return unsubscribe;
 }

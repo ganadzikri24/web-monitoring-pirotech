@@ -3,7 +3,7 @@
 import { Volume2, VolumeX, AlertTriangle, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { listenToBuzzer, setBuzzerState } from "@/lib/firebaseUtils";
+import { listenToBuzzer, setBuzzerState, pushNotification } from "@/lib/firebaseUtils";
 
 export default function BuzzerControl() {
   const [buzzer, setBuzzer] = useState(false);
@@ -19,11 +19,18 @@ export default function BuzzerControl() {
 
   const handleToggle = async () => {
     // Optimistic update
-    setBuzzer(!buzzer);
-    const success = await setBuzzerState(!buzzer);
+    const nextState = !buzzer;
+    setBuzzer(nextState);
+    const success = await setBuzzerState(nextState);
     if (!success) {
       // Revert on failure
       setBuzzer(buzzer);
+    } else {
+      pushNotification(
+        "Status Buzzer Diubah",
+        nextState ? "Buzzer telah diaktifkan secara manual." : "Buzzer masuk ke Mode Silent.",
+        "warning"
+      );
     }
   };
 

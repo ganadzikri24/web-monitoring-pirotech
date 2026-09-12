@@ -4,7 +4,7 @@ import { Thermometer, Timer, Activity, Flame, AlertTriangle } from "lucide-react
 import RealtimeChart from "@/components/RealtimeChart";
 import BuzzerControl from "@/components/BuzzerControl";
 import ProcessTimer from "@/components/overview/ProcessTimer";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { listenToMonitoring, MonitoringData, listenToConfig, ConfigData } from "@/lib/firebaseUtils";
 import { getRunningBatch } from "@/lib/mockData";
 import { useRole } from "@/lib/useRole";
@@ -43,13 +43,38 @@ export default function DashboardPage() {
   const isDisconnected = monitoringData === null;
   
   // Warning Logic
+  const hasNotifiedRef = useRef(false);
+
   useEffect(() => {
     if (tempC !== null && config) {
       const warningThreshold = (config.warning_percent / 100) * config.overheat_limit;
       if (tempC >= warningThreshold && tempC < config.overheat_limit) {
         setShowWarning(true);
+        if (!hasNotifiedRef.current) {
+          import("@/lib/firebaseUtils").then(({ pushNotification }) => {
+            pushNotification(
+              "Peringatan Suhu",
+              `Suhu mencapai batas Warning (${tempC.toFixed(1)}°C)`,
+              "warning"
+            );
+          });
+          hasNotifiedRef.current = true;
+        }
+      } else if (tempC >= config.overheat_limit) {
+        setShowWarning(false);
+        if (!hasNotifiedRef.current) {
+          import("@/lib/firebaseUtils").then(({ pushNotification }) => {
+            pushNotification(
+              "Suhu Kritis (Overheat)",
+              `Suhu mencapai ambang kritis (${tempC.toFixed(1)}°C)!`,
+              "critical"
+            );
+          });
+          hasNotifiedRef.current = true;
+        }
       } else {
         setShowWarning(false);
+        hasNotifiedRef.current = false; // Reset if temp drops back to normal
       }
     } else {
       setShowWarning(false);

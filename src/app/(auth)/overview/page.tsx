@@ -51,6 +51,14 @@ export default function OverviewPage() {
     } else {
       const newBatch = await startFirebaseBatch(numWeight, type, "admin");
       setBatch(newBatch);
+      
+      // Trigger notifikasi
+      const { pushNotification } = await import("@/lib/firebaseUtils");
+      pushNotification(
+        "Pembakaran Dimulai", 
+        `Sesi baru dimulai dengan berat ${numWeight} kg (${type === 'mix' ? 'Campuran' : type}).`, 
+        "info"
+      );
     }
   };
 
@@ -96,7 +104,7 @@ export default function OverviewPage() {
       const t = batch.plasticType || "mix";
       const { fuelLiters } = calculateEstimatedYield(numWeight, t);
 
-      const success = await stopFirebaseBatch(batch.id, totalAccumulated, fuelLiters);
+      const success = await stopFirebaseBatch(batch.id, totalAccumulated, fuelLiters, numWeight, t);
       if (success) setBatch(null);
     }
   };
