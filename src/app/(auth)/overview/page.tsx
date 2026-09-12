@@ -24,49 +24,36 @@ export default function OverviewPage() {
   // Note: For firebase batches, we might have an 'id' attached to it
   const [batch, setBatch] = useState<(Batch & { id?: string }) | null>(null);
 
-  const isMock = process.env.NEXT_PUBLIC_USE_MOCK_AUTH === "true";
+
 
   useEffect(() => {
     const loadBatch = async () => {
-      if (isMock) {
-        const b = await getRunningBatch();
-        setBatch(b);
-      } else {
-        const fb = await getRunningFirebaseBatch();
-        setBatch(fb);
-      }
+      const fb = await getRunningFirebaseBatch();
+      setBatch(fb);
     };
     loadBatch();
     const interval = setInterval(loadBatch, 5000);
     return () => clearInterval(interval);
-  }, [isMock]);
+  }, []);
 
   const handleStart = async () => {
     const numWeight = parseFloat(weight);
     if (!numWeight || !type) return;
     
-    if (isMock) {
-      const newBatch = await startNewBatch(numWeight, type, "admin");
-      setBatch(newBatch);
-    } else {
-      const newBatch = await startFirebaseBatch(numWeight, type, "admin");
-      setBatch(newBatch);
-      
-      // Trigger notifikasi
-      const { pushNotification } = await import("@/lib/firebaseUtils");
-      pushNotification(
-        "Pembakaran Dimulai", 
-        `Sesi baru dimulai dengan berat ${numWeight} kg (${type === 'mix' ? 'Campuran' : type}).`, 
-        "info"
-      );
-    }
+    const newBatch = await startFirebaseBatch(numWeight, type, "admin");
+    setBatch(newBatch);
+    
+    // Trigger notifikasi
+    const { pushNotification } = await import("@/lib/firebaseUtils");
+    pushNotification(
+      "Pembakaran Dimulai", 
+      `Sesi baru dimulai dengan berat ${numWeight} kg (${type === 'mix' ? 'Campuran' : type}).`, 
+      "info"
+    );
   };
 
   const handlePause = async () => {
-    if (isMock) {
-      const updated = await pauseBatch();
-      if (updated) setBatch(updated);
-    } else if (batch && batch.id) {
+    if (batch && batch.id) {
       const currentMs = batch.accumulatedMs || 0;
       const additionalMs = Date.now() - batch.startTs;
       const totalAccumulated = currentMs + additionalMs;
@@ -79,10 +66,7 @@ export default function OverviewPage() {
   };
 
   const handleResume = async () => {
-    if (isMock) {
-      const updated = await resumeBatch();
-      if (updated) setBatch(updated);
-    } else if (batch && batch.id) {
+    if (batch && batch.id) {
       const success = await resumeFirebaseBatch(batch.id);
       if (success) {
         setBatch({ ...batch, status: "running", startTs: Date.now(), pausedAt: undefined });
@@ -91,10 +75,7 @@ export default function OverviewPage() {
   };
 
   const handleStop = async () => {
-    if (isMock) {
-      const completed = await stopBatch();
-      if (completed) setBatch(null); // Clear — it's now in the log
-    } else if (batch && batch.id) {
+    if (batch && batch.id) {
       let totalAccumulated = batch.accumulatedMs || 0;
       if (batch.status === "running") {
         totalAccumulated += Date.now() - batch.startTs;
