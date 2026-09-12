@@ -39,6 +39,17 @@ export default function LoginPage() {
       }
 
       await signInWithEmailAndPassword(auth, loginEmail, password);
+      
+      // Kirim notifikasi login
+      import("@/lib/firebaseUtils").then(({ pushNotification }) => {
+        pushNotification(
+          "Aktivitas Login", 
+          `Akun ${loginEmail} berhasil masuk ke sistem.`, 
+          "info", 
+          auth.currentUser?.uid
+        );
+      });
+
       router.push("/overview");
     } catch (err: any) {
       console.error("Login failed", err);

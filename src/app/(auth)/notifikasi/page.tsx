@@ -41,7 +41,7 @@ export default function NotifikasiPage() {
     if (roleLoading || user === undefined) return;
     
     // Fetch up to 50 latest notifications for the history page
-    const unsubscribe = listenToNotifications(50, user?.uid, !!isAdmin, (data) => {
+    const unsubscribe = listenToNotifications(50, user?.uid, user?.email, !!isAdmin, (data) => {
       setNotifications(data);
       setLoading(false);
     });

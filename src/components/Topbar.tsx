@@ -45,7 +45,7 @@ export default function Topbar({ onMenuClick = () => {} }) {
     // Check local storage for last read timestamp
     const storedLastRead = Number(localStorage.getItem('lastReadTimestamp')) || 0;
     
-    const unsubscribe = listenToNotifications(10, user?.uid, !!isAdmin, (data) => {
+    const unsubscribe = listenToNotifications(10, user?.uid, user?.email, !!isAdmin, (data) => {
       setNotifications(data);
       if (data.length > 0) {
         const latest = data[0];
@@ -131,7 +131,7 @@ export default function Topbar({ onMenuClick = () => {} }) {
             initial={{ opacity: 0, y: -20, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -20, scale: 0.9 }}
-            className={`fixed top-4 right-4 md:right-8 z-[100] w-80 shadow-xl rounded-2xl border flex overflow-hidden cursor-pointer ${
+            className={`fixed top-20 right-4 md:right-8 z-[100] w-80 shadow-xl rounded-2xl border flex overflow-hidden cursor-pointer ${
               toastNotif.type === 'warning' ? 'bg-amber-100/95 border-amber-300' :
               toastNotif.type === 'critical' ? 'bg-red-100/95 border-red-300' :
               'bg-card-bg/95 border-card-border backdrop-blur-md'

@@ -60,6 +60,17 @@ export default function LogActivityTable() {
         updates[`log_activity/${id}`] = null;
       });
       await update(ref(db), updates);
+      
+      // Kirim notifikasi ke admin tentang log yang dihapus
+      import("@/lib/firebaseUtils").then(({ pushNotification }) => {
+        pushNotification(
+          "Penghapusan Log", 
+          `Admin menghapus ${selectedLogs.length} riwayat pembakaran.`, 
+          "warning", 
+          "admin"
+        );
+      });
+
       setSelectedLogs([]);
       await loadBatches();
     } catch (error) {
