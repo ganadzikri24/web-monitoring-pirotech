@@ -288,9 +288,8 @@ export async function pushNotification(title: string, message: string, type: "in
 }
 
 export function listenToNotifications(limit: number, currentUid: string | undefined, currentUserEmail: string | undefined, isAdmin: boolean, callback: (notifs: NotificationData[]) => void) {
-  // Ambil n notifikasi terakhir (kita ambil lebih banyak jika harus di filter di client agar limit akurat, tapi untuk sekarang kita ambil limit saja)
-  // Untuk amannya ambil 50 lalu filter, kemudian potong sesuai limit (jika bukan admin)
-  const queryLimit = isAdmin ? limit : 50; 
+  // Ambil lebih banyak jika harus di filter di client agar limit akurat
+  const queryLimit = isAdmin ? limit : 1000; 
   const notifQuery = query(ref(db, 'notifications'), limitToLast(queryLimit));
   
   const unsubscribe = onValue(notifQuery, (snapshot) => {

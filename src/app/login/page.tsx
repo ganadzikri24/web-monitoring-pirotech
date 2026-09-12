@@ -38,7 +38,8 @@ export default function LoginPage() {
         loginEmail = data.email;
       }
 
-      await signInWithEmailAndPassword(auth, loginEmail, password);
+      const userCredential = await signInWithEmailAndPassword(auth, loginEmail, password);
+      const uid = userCredential.user.uid;
       
       // Kirim notifikasi login
       import("@/lib/firebaseUtils").then(({ pushNotification }) => {
@@ -46,7 +47,7 @@ export default function LoginPage() {
           "Aktivitas Login", 
           `Akun ${loginEmail} berhasil masuk ke sistem.`, 
           "info", 
-          auth.currentUser?.uid
+          uid
         );
       });
 
