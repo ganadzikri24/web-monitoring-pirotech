@@ -224,15 +224,27 @@ export async function stopFirebaseBatch(batchId: string, currentAccumulatedMs: n
       fuelLiters: fuelLiters,
     });
     
-    // 2. Simpan hasil akhir ke log_activity
-    const dateObj = new Date();
+    // 2. Simpan hasil akhir ke log_activity dengan zona waktu WIB (UTC+7)
+    const now = new Date();
+    const wibTime = new Date(now.getTime() + (7 * 60 * 60 * 1000));
     // Format YYYY-MM-DD HH:mm:ss
-    const tanggalStr = dateObj.toISOString().replace('T', ' ').substring(0, 19);
+    const tanggalStr = wibTime.toISOString().replace('T', ' ').substring(0, 19);
+    
+    // Map ID plastik ke nama (karena type menyimpan ID seperti "1", "2")
+    const plasticNames: Record<string, string> = {
+      "1": "PET",
+      "2": "HDPE",
+      "4": "LDPE",
+      "5": "PP",
+      "6": "PS",
+      "mix": "MIX"
+    };
+    const jenisPlastikStr = plasticNames[type] || type.toUpperCase();
     
     const logData = {
       tanggal: tanggalStr,
       berat_kg: weightKg,
-      jenis_plastik: type,
+      jenis_plastik: jenisPlastikStr,
       bbm_liter: fuelLiters,
       durasi: formatDuration(currentAccumulatedMs)
     };
