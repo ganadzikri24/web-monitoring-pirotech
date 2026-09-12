@@ -5,8 +5,7 @@ import RealtimeChart from "@/components/RealtimeChart";
 import BuzzerControl from "@/components/BuzzerControl";
 import ProcessTimer from "@/components/overview/ProcessTimer";
 import { useEffect, useState, useRef } from "react";
-import { listenToMonitoring, MonitoringData, listenToConfig, ConfigData } from "@/lib/firebaseUtils";
-import { getRunningBatch } from "@/lib/mockData";
+import { listenToMonitoring, MonitoringData, listenToConfig, ConfigData, getRunningFirebaseBatch } from "@/lib/firebaseUtils";
 import { useRole } from "@/lib/useRole";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Batch } from "@/lib/types";
@@ -19,7 +18,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const loadBatch = async () => {
-      const batch = await getRunningBatch();
+      const batch = await getRunningFirebaseBatch();
       setRunningBatch(batch);
     };
     loadBatch();

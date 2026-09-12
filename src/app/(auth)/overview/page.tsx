@@ -14,7 +14,8 @@ import {
   startFirebaseBatch, 
   pauseFirebaseBatch, 
   resumeFirebaseBatch, 
-  stopFirebaseBatch 
+  stopFirebaseBatch,
+  pushNotification
 } from "@/lib/firebaseUtils";
 import type { Batch } from "@/lib/types";
 
@@ -37,56 +38,80 @@ export default function OverviewPage() {
   }, []);
 
   const handleStart = async () => {
-    const numWeight = parseFloat(weight);
-    if (!numWeight || !type) return;
-    
-    const newBatch = await startFirebaseBatch(numWeight, type, "admin");
-    setBatch(newBatch);
-    
-    // Trigger notifikasi
-    const { pushNotification } = await import("@/lib/firebaseUtils");
-    pushNotification(
-      "Pembakaran Dimulai", 
-      `Sesi baru dimulai dengan berat ${numWeight} kg (${type === 'mix' ? 'Campuran' : type}).`, 
-      "info"
-    );
+    try {
+      const numWeight = parseFloat(weight);
+      if (!numWeight || !type) return;
+      
+      const newBatch = await startFirebaseBatch(numWeight, type, "admin");
+      setBatch(newBatch);
+      
+      // Trigger notifikasi
+      pushNotification(
+        "Pembakaran Dimulai", 
+        `Sesi baru dimulai dengan berat ${numWeight} kg (${type === 'mix' ? 'Campuran' : type}).`, 
+        "info"
+      );
+    } catch (err: any) {
+      alert("Gagal memulai pembakaran: " + (err.message || "Pastikan Firebase Rules mengizinkan write ke /batches"));
+      console.error(err);
+    }
   };
 
   const handlePause = async () => {
-    if (batch && batch.id) {
-      const currentMs = batch.accumulatedMs || 0;
-      const additionalMs = Date.now() - batch.startTs;
-      const totalAccumulated = currentMs + additionalMs;
-      
-      const success = await pauseFirebaseBatch(batch.id, totalAccumulated);
-      if (success) {
-        setBatch({ ...batch, status: "paused", pausedAt: Date.now(), accumulatedMs: totalAccumulated });
+    try {
+      if (batch && batch.id) {
+        const currentMs = batch.accumulatedMs || 0;
+        const additionalMs = Date.now() - batch.startTs;
+        const totalAccumulated = currentMs + additionalMs;
+        
+        const success = await pauseFirebaseBatch(batch.id, totalAccumulated);
+        if (success) {
+          setBatch({ ...batch, status: "paused", pausedAt: Date.now(), accumulatedMs: totalAccumulated });
+        } else {
+          alert("Gagal menjeda pembakaran. Periksa koneksi/aturan Firebase.");
+        }
       }
+    } catch (err: any) {
+      alert("Gagal menjeda pembakaran: " + err.message);
     }
   };
 
   const handleResume = async () => {
-    if (batch && batch.id) {
-      const success = await resumeFirebaseBatch(batch.id);
-      if (success) {
-        setBatch({ ...batch, status: "running", startTs: Date.now(), pausedAt: undefined });
+    try {
+      if (batch && batch.id) {
+        const success = await resumeFirebaseBatch(batch.id);
+        if (success) {
+          setBatch({ ...batch, status: "running", startTs: Date.now(), pausedAt: undefined });
+        } else {
+          alert("Gagal melanjutkan pembakaran. Periksa koneksi/aturan Firebase.");
+        }
       }
+    } catch (err: any) {
+      alert("Gagal melanjutkan pembakaran: " + err.message);
     }
   };
 
   const handleStop = async () => {
-    if (batch && batch.id) {
-      let totalAccumulated = batch.accumulatedMs || 0;
-      if (batch.status === "running") {
-        totalAccumulated += Date.now() - batch.startTs;
-      }
-      
-      const numWeight = batch.wasteKg || 0;
-      const t = batch.plasticType || "mix";
-      const { fuelLiters } = calculateEstimatedYield(numWeight, t);
+    try {
+      if (batch && batch.id) {
+        let totalAccumulated = batch.accumulatedMs || 0;
+        if (batch.status === "running") {
+          totalAccumulated += Date.now() - batch.startTs;
+        }
+        
+        const numWeight = batch.wasteKg || 0;
+        const t = batch.plasticType || "mix";
+        const { fuelLiters } = calculateEstimatedYield(numWeight, t);
 
-      const success = await stopFirebaseBatch(batch.id, totalAccumulated, fuelLiters, numWeight, t);
-      if (success) setBatch(null);
+        const success = await stopFirebaseBatch(batch.id, totalAccumulated, fuelLiters, numWeight, t);
+        if (success) {
+          setBatch(null);
+        } else {
+          alert("Gagal menyelesaikan pembakaran. Periksa koneksi/aturan Firebase.");
+        }
+      }
+    } catch (err: any) {
+      alert("Gagal menyelesaikan pembakaran: " + err.message);
     }
   };
 
