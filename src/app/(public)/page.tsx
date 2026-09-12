@@ -356,7 +356,7 @@ export default function Home() {
                 </div>
                 <div className="flex items-center gap-2 text-white/80 text-sm">
                   <MapPin className="w-4 h-4" />
-                  Sekolah Vokasi IPB, Bogor
+                  Jl. Kumbang No.14, Kelurahan Babakan, Kecamatan Bogor Tengah, Kota Bogor, Jawa Barat 16128
                 </div>
               </div>
 
