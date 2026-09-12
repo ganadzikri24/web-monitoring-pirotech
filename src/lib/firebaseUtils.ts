@@ -269,15 +269,17 @@ export interface NotificationData {
   message: string;
   type: "info" | "warning" | "success" | "critical";
   timestamp: number;
+  targetId?: string;
 }
 
-export async function pushNotification(title: string, message: string, type: "info" | "warning" | "success" | "critical") {
+export async function pushNotification(title: string, message: string, type: "info" | "warning" | "success" | "critical", targetId: string = "all") {
   try {
     const notifRef = push(ref(db, 'notifications'));
     await set(notifRef, {
       title,
       message,
       type,
+      targetId,
       timestamp: Date.now()
     });
   } catch (err) {
@@ -285,9 +287,11 @@ export async function pushNotification(title: string, message: string, type: "in
   }
 }
 
-export function listenToNotifications(limit: number, callback: (notifs: NotificationData[]) => void) {
-  // Ambil n notifikasi terakhir
-  const notifQuery = query(ref(db, 'notifications'), limitToLast(limit));
+export function listenToNotifications(limit: number, currentUid: string | undefined, isAdmin: boolean, callback: (notifs: NotificationData[]) => void) {
+  // Ambil n notifikasi terakhir (kita ambil lebih banyak jika harus di filter di client agar limit akurat, tapi untuk sekarang kita ambil limit saja)
+  // Untuk amannya ambil 50 lalu filter, kemudian potong sesuai limit (jika bukan admin)
+  const queryLimit = isAdmin ? limit : 50; 
+  const notifQuery = query(ref(db, 'notifications'), limitToLast(queryLimit));
   
   const unsubscribe = onValue(notifQuery, (snapshot) => {
     if (snapshot.exists()) {
@@ -296,9 +300,26 @@ export function listenToNotifications(limit: number, callback: (notifs: Notifica
         id: key,
         ...data[key]
       })) as NotificationData[];
-      // Urutkan dari yang terbaru
-      parsed.sort((a, b) => b.timestamp - a.timestamp);
-      callback(parsed);
+      
+      // Filter logic
+      const filtered = parsed.filter(notif => {
+        if (isAdmin) return true;
+        
+        // Sembunyikan notifikasi "Aktivitas Akun" lawas dari user non-admin
+        if (!notif.targetId && notif.title === "Aktivitas Akun") {
+           return false;
+        }
+        
+        // Notifikasi global (tidak ada targetId atau targetId === "all") 
+        if (!notif.targetId || notif.targetId === "all") return true;
+        
+        // Notifikasi spesifik untuk user ini
+        return notif.targetId === currentUid;
+      });
+
+      // Urutkan dari yang terbaru dan ambil sejumlah limit
+      filtered.sort((a, b) => b.timestamp - a.timestamp);
+      callback(filtered.slice(0, limit));
     } else {
       callback([]);
     }

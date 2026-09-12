@@ -139,7 +139,7 @@ function ProfilContent() {
       if (hasChanges) {
         setProfileMessage("✅ Perubahan berhasil disimpan!");
         import("@/lib/firebaseUtils").then(({ pushNotification }) => {
-          pushNotification("Aktivitas Akun", `Profil ${user.email} telah diperbarui.`, "info");
+          pushNotification("Aktivitas Akun", `Profil ${user.email} telah diperbarui.`, "info", user.uid);
         });
       } else {
         setProfileMessage("Tidak ada perubahan yang perlu disimpan.");

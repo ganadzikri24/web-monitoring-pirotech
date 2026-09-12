@@ -49,7 +49,8 @@ export default function OverviewPage() {
       pushNotification(
         "Pembakaran Dimulai", 
         `Sesi baru dimulai dengan berat ${numWeight} kg (${type === 'mix' ? 'Campuran' : type}).`, 
-        "info"
+        "info",
+        "all"
       );
     } catch (err: any) {
       alert("Gagal memulai pembakaran: " + (err.message || "Pastikan Firebase Rules mengizinkan write ke /batches"));
@@ -106,6 +107,13 @@ export default function OverviewPage() {
         const success = await stopFirebaseBatch(batch.id, totalAccumulated, fuelLiters, numWeight, t);
         if (success) {
           setBatch(null);
+          // Trigger notifikasi stop
+          pushNotification(
+            "Pembakaran Selesai",
+            "Sesi pembakaran telah berakhir. Log data siap dilihat dan diunduh.",
+            "success",
+            "all"
+          );
         } else {
           alert("Gagal menyelesaikan pembakaran. Periksa koneksi/aturan Firebase.");
         }

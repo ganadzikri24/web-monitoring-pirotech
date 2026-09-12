@@ -34,12 +34,14 @@ export default function Topbar({ onMenuClick = () => {} }) {
   const router = useRouter();
 
   useEffect(() => {
-    // Ambil 3 notifikasi terakhir
-    const unsubscribe = listenToNotifications(3, (data) => {
+    if (user === undefined) return; // wait until auth state is loaded
+    
+    // Ambil 3 notifikasi terakhir, filter sesuai role
+    const unsubscribe = listenToNotifications(3, user?.uid, !!isAdmin, (data) => {
       setNotifications(data);
     });
     return () => unsubscribe();
-  }, []);
+  }, [user, isAdmin]);
 
   const menuItems = [
     { label: "Overview", href: "/overview" },
@@ -66,10 +68,18 @@ export default function Topbar({ onMenuClick = () => {} }) {
   const getNotifColor = (type: string) => {
     switch (type) {
       case "info": return "text-blue-600";
-      case "warning": return "text-amber-600";
-      case "critical": return "text-red-600";
+      case "warning": return "text-amber-700";
+      case "critical": return "text-red-700";
       case "success": return "text-brand-green";
       default: return "text-brand-sage";
+    }
+  };
+
+  const getNotifStyle = (type: string) => {
+    switch (type) {
+      case "warning": return "bg-amber-50/80 hover:bg-amber-100/80";
+      case "critical": return "bg-red-50/80 hover:bg-red-100/80";
+      default: return "hover:bg-brand-green50/50";
     }
   };
 
@@ -156,13 +166,13 @@ export default function Topbar({ onMenuClick = () => {} }) {
               <div className="max-h-80 overflow-y-auto">
                 {notifications.length > 0 ? (
                   notifications.map((notif) => (
-                    <div key={notif.id} className="p-3 border-b border-card-border/50 hover:bg-brand-green50/50 transition-colors">
+                    <div key={notif.id} className={`p-3 border-b border-card-border/50 transition-colors ${getNotifStyle(notif.type)}`}>
                       <div className="flex items-center gap-2 mb-1">
                         {getNotifIcon(notif.type)}
-                        <p className={`text-xs font-semibold ${getNotifColor(notif.type)}`}>{notif.title}</p>
+                        <p className={`text-xs font-bold ${getNotifColor(notif.type)}`}>{notif.title}</p>
                       </div>
-                      <p className="text-xs text-brand-sage leading-relaxed ml-6">{notif.message}</p>
-                      <p className="text-[10px] text-brand-sage/70 mt-1 ml-6">{timeSince(notif.timestamp)}</p>
+                      <p className={`text-xs leading-relaxed ml-6 ${notif.type === 'warning' || notif.type === 'critical' ? 'text-foreground font-medium' : 'text-brand-sage'}`}>{notif.message}</p>
+                      <p className={`text-[10px] mt-1 ml-6 ${notif.type === 'warning' || notif.type === 'critical' ? 'text-foreground/70' : 'text-brand-sage/70'}`}>{timeSince(notif.timestamp)}</p>
                     </div>
                   ))
                 ) : (
