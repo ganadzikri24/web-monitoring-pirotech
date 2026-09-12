@@ -35,23 +35,22 @@ export default function BuzzerControl() {
             <VolumeX className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-brand-green700">Menu Silent Buzzer</h2>
+            <h2 className="text-lg font-bold text-brand-green700">Silent Buzzer</h2>
             <p className="text-xs text-brand-sage">Kontrol izin sistem untuk menyalakan buzzer.</p>
           </div>
         </div>
       </div>
-      
+
       <div className="flex-1 flex flex-col justify-center items-center py-6">
-        <motion.button 
+        <motion.button
           onClick={handleToggle}
           disabled={loading}
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className={`relative w-40 h-40 rounded-full flex flex-col items-center justify-center gap-2 transition-colors shadow-lg cursor-pointer ${
-            buzzer 
-              ? 'bg-brand-green hover:bg-brand-green700 text-white shadow-brand-green/30' 
-              : 'bg-input-bg border-4 border-card-border text-brand-sage hover:text-foreground'
-          }`}
+          className={`relative w-40 h-40 rounded-full flex flex-col items-center justify-center gap-2 transition-colors shadow-lg cursor-pointer ${buzzer
+            ? 'bg-brand-green hover:bg-brand-green700 text-white shadow-brand-green/30'
+            : 'bg-input-bg border-4 border-card-border text-brand-sage hover:text-foreground'
+            }`}
         >
           {buzzer && (
             <span className="absolute inset-0 rounded-full animate-ping border-4 border-brand-green opacity-20"></span>
