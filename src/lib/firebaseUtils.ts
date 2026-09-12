@@ -305,13 +305,21 @@ export function listenToNotifications(limit: number, currentUid: string | undefi
       const filtered = parsed.filter(notif => {
         if (isAdmin) return true;
         
-        // Sembunyikan notifikasi "Aktivitas Akun" lawas dari user non-admin
-        if (!notif.targetId && notif.title === "Aktivitas Akun") {
-           return false;
+        // Sembunyikan SEMUA notifikasi lawas (tanpa targetId) dari user non-admin, 
+        // kecuali jika itu peringatan global (suhu) atau event operasional (pembakaran)
+        if (!notif.targetId) {
+          if (
+            notif.type === "warning" || 
+            notif.type === "critical" || 
+            notif.title.includes("Pembakaran")
+          ) {
+            return true;
+          }
+          return false;
         }
         
-        // Notifikasi global (tidak ada targetId atau targetId === "all") 
-        if (!notif.targetId || notif.targetId === "all") return true;
+        // Notifikasi global (targetId === "all") 
+        if (notif.targetId === "all") return true;
         
         // Notifikasi spesifik untuk user ini
         return notif.targetId === currentUid;

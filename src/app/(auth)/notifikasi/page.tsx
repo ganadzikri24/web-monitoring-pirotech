@@ -182,8 +182,14 @@ export default function NotifikasiPage() {
             notifications.map((notif) => (
               <div 
                 key={notif.id} 
-                onClick={() => isSelectionMode ? toggleSelectLog(notif.id!) : null}
-                className={`p-6 transition-colors flex gap-4 ${isSelectionMode ? "cursor-pointer" : ""} ${getNotifStyle(notif.type)}`}
+                onClick={() => {
+                  if (isSelectionMode) {
+                    toggleSelectLog(notif.id!);
+                  } else if (notif.title === "Pembakaran Selesai") {
+                    window.location.href = "/log-activity";
+                  }
+                }}
+                className={`p-6 transition-colors flex gap-4 ${isSelectionMode || notif.title === "Pembakaran Selesai" ? "cursor-pointer" : ""} ${notif.title === "Pembakaran Selesai" && !isSelectionMode ? "hover:opacity-80" : ""} ${getNotifStyle(notif.type)}`}
               >
                 {isAdmin && isSelectionMode && (
                   <div className="shrink-0 mt-1">
