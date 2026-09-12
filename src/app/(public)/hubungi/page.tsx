@@ -80,7 +80,7 @@ export default function HubungiKamiPage() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-brand-green700">Alamat</p>
-                  <p className="text-sm text-brand-sage">Sekolah Vokasi IPB, Bogor, Jawa Barat</p>
+                  <p className="text-sm text-brand-sage">Jl. Kumbang No.14, Kelurahan Babakan, Kecamatan Bogor Tengah, Kota Bogor, Jawa Barat 16128</p>
                 </div>
               </div>
 
@@ -90,7 +90,7 @@ export default function HubungiKamiPage() {
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-brand-green700">Institusi</p>
-                  <p className="text-sm text-brand-sage">Sekolah Vokasi IPB</p>
+                  <p className="text-sm text-brand-sage">Sekolah Vokasi IPB University</p>
                 </div>
               </div>
             </div>
