@@ -42,8 +42,8 @@
         ".write": "auth != null && auth.token.role === 'admin'"
       },
       "notifications": {
-        ".read": "auth != null && auth.token.role === 'admin'",
-        ".write": "auth != null && auth.token.role === 'admin'"
+        ".read": "auth != null",
+        ".write": "auth != null"
       },
       "telemetry": {
         ".read": "auth != null",
@@ -81,6 +81,10 @@
     "log_activity": {
       ".read": "auth != null",
       ".write": "auth != null && (auth.token.role === 'admin' || auth.token.role === 'operator')"
+    },
+    "notifications": {
+      ".read": "auth != null",
+      ".write": "auth != null"
     }
   }
 }

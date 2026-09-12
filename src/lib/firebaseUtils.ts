@@ -310,12 +310,12 @@ export function listenToNotifications(limit: number, currentUid: string | undefi
           if (
             notif.type === "warning" || 
             notif.type === "critical" || 
-            notif.title.includes("Pembakaran")
+            (notif.title && typeof notif.title === 'string' && notif.title.includes("Pembakaran"))
           ) {
             return true;
           }
           // Jika ini adalah log lawas aktivitas akun, izinkan hanya jika pesannya menyebut email user saat ini
-          if (currentUserEmail && notif.message.includes(currentUserEmail)) {
+          if (currentUserEmail && notif.message && typeof notif.message === 'string' && notif.message.includes(currentUserEmail)) {
             return true;
           }
           return false;
@@ -329,11 +329,14 @@ export function listenToNotifications(limit: number, currentUid: string | undefi
       });
 
       // Urutkan dari yang terbaru dan ambil sejumlah limit
-      filtered.sort((a, b) => b.timestamp - a.timestamp);
+      filtered.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
       callback(filtered.slice(0, limit));
     } else {
       callback([]);
     }
+  }, (error) => {
+    console.error("Error listening to notifications:", error);
+    // If it's a permission denied error, the user's Firebase rules are blocking them
   });
 
   return unsubscribe;
