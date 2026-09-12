@@ -43,11 +43,11 @@ export default function AuthLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-app-bg overflow-x-hidden">
+    <div className="flex min-h-screen bg-app-bg">
       <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
       <div className="flex-1 lg:ml-[260px] flex flex-col min-w-0 transition-all duration-300">
         <Topbar onMenuClick={() => setSidebarOpen(true)} />
-        <main className="flex-1 p-4 md:p-8 w-full max-w-full overflow-x-hidden">
+        <main className="flex-1 p-4 md:p-8 w-full max-w-full">
           {children}
         </main>
       </div>
