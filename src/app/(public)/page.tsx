@@ -79,7 +79,7 @@ export default function Home() {
 
             <p className="text-lg text-brand-sage max-w-xl mx-auto lg:mx-0 leading-relaxed">
               Alat pirolisis inovatif yang mengubah limbah plastik menjadi BBM
-              setara solar — dikembangkan oleh tim Sekolah Vokasi IPB.
+              setara solar dikembangkan oleh tim Sekolah Vokasi IPB.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">

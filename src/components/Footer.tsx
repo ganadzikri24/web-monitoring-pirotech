@@ -62,7 +62,7 @@ export default function Footer() {
               </li>
               <li className="flex items-start gap-2.5 text-sm text-brand-sage">
                 <MapPin className="w-4 h-4 mt-0.5 shrink-0 text-brand-green" />
-                <span>Sekolah Vokasi IPB, Bogor</span>
+                <span>Jl. Kumbang No.14, Kelurahan Babakan, Kecamatan Bogor Tengah, Kota Bogor, Jawa Barat 16128</span>
               </li>
             </ul>
           </div>
