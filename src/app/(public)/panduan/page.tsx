@@ -36,73 +36,74 @@ export default function PanduanPage() {
         >
           <div className="absolute top-0 left-0 w-2 h-full bg-red-500"></div>
           
-          <div className="flex flex-col lg:flex-row gap-10 items-start">
-            <div className="w-full lg:w-1/2">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded-xl">
-                  <ShieldAlert className="w-8 h-8 text-red-600 dark:text-red-500" />
-                </div>
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                  Pemberitahuan Penting
-                </h2>
-              </div>
-              <p className="text-gray-700 dark:text-gray-300 font-medium text-lg leading-relaxed mb-4">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="bg-red-100 dark:bg-red-900/30 p-3 rounded-xl">
+              <ShieldAlert className="w-8 h-8 text-red-600 dark:text-red-500" />
+            </div>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+              Pemberitahuan Penting
+            </h2>
+          </div>
+
+          <div className="w-full mb-10">
+             <img 
+              src="/panduan/penting.webp" 
+              alt="Larangan plastik metalized"
+              decoding="async"
+              className="w-full h-auto rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm"
+              onError={(e) => {
+                (e.target as HTMLImageElement).style.display = 'none';
+                (e.target as HTMLImageElement).parentElement!.innerHTML += '<div class="w-full aspect-[21/9] bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-200 dark:border-gray-800 flex items-center justify-center"><div class="text-gray-400 text-sm font-medium text-center">Foto Banner<br/><span class="text-xs">(Rasio Rekomendasi: 1920 x 820 piksel)</span></div></div>';
+              }}
+            />
+          </div>
+          
+          <div className="flex flex-col gap-6">
+            <div>
+              <p className="text-gray-700 dark:text-gray-300 font-medium text-lg leading-relaxed mb-2">
                 Dilarang menggunakan plastik/kemasan yang ada lapisan{" "}
                 <span className="font-bold text-red-600 dark:text-red-400">metalized film</span> atau aluminium foil di dalamnya.
               </p>
-              <p className="text-gray-500 dark:text-gray-400 mb-8">
+              <p className="text-gray-500 dark:text-gray-400">
                 Contoh: bungkus kopi instan, sachet bumbu, kemasan keripik yang mengkilap di bagian dalam.
               </p>
-              
-              <div className="space-y-6">
-                <div className="bg-red-50 dark:bg-red-900/10 p-5 rounded-2xl border border-red-100 dark:border-red-900/20">
-                  <h3 className="font-bold text-red-700 dark:text-red-400 flex items-center gap-2 mb-3">
-                    <XCircle className="w-5 h-5" /> Mengapa Dilarang?
-                  </h3>
-                  <ul className="space-y-2">
-                    {[
-                      "Tidak menghasilkan minyak, hanya jadi limbah padat.",
-                      "Menimbulkan kerak sangat keras & berisiko menyumbat.",
-                      "Menghambat perpindahan panas (proses jadi tidak efisien)."
-                    ].map((text, i) => (
-                      <li key={i} className="flex items-start gap-3 text-red-600/90 dark:text-red-400/90">
-                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0"></span>
-                        <span>{text}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                
-                <div className="bg-emerald-50 dark:bg-emerald-900/10 p-5 rounded-2xl border border-emerald-100 dark:border-emerald-900/20">
-                  <h3 className="font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-2 mb-3">
-                    <CheckCircle2 className="w-5 h-5" /> Contoh yang Aman
-                  </h3>
-                  <ul className="space-y-2">
-                    {[
-                      "Botol PET, HDPE, PP yang bersih & kering.",
-                      "Plastik rumah tangga tanpa lapisan metal (bagian dalam tidak mengkilap)."
-                    ].map((text, i) => (
-                      <li key={i} className="flex items-start gap-3 text-emerald-700/90 dark:text-emerald-400/90">
-                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0"></span>
-                        <span>{text}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
             </div>
-
-            <div className="w-full lg:w-1/2 lg:sticky lg:top-32">
-               <img 
-                src="/panduan/penting.webp" 
-                alt="Larangan plastik metalized"
-                decoding="async"
-                className="w-full h-auto rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                  (e.target as HTMLImageElement).parentElement!.innerHTML += '<div class="w-full aspect-[4/3] bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-200 dark:border-gray-800 flex items-center justify-center"><div class="text-gray-400 text-sm font-medium text-center">Foto<br/><span class="text-xs">(Rasio Rekomendasi: 4:3 atau 1:1)</span></div></div>';
-                }}
-              />
+            
+            <div className="grid md:grid-cols-2 gap-6 mt-2">
+              <div className="bg-red-50 dark:bg-red-900/10 p-6 rounded-2xl border border-red-100 dark:border-red-900/20">
+                <h3 className="font-bold text-red-700 dark:text-red-400 flex items-center gap-2 mb-4">
+                  <XCircle className="w-5 h-5" /> Mengapa Dilarang?
+                </h3>
+                <ul className="space-y-3">
+                  {[
+                    "Tidak menghasilkan minyak, hanya jadi limbah padat.",
+                    "Menimbulkan kerak sangat keras & berisiko menyumbat.",
+                    "Menghambat perpindahan panas (proses jadi tidak efisien)."
+                  ].map((text, i) => (
+                    <li key={i} className="flex items-start gap-3 text-red-600/90 dark:text-red-400/90">
+                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0"></span>
+                      <span>{text}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div className="bg-emerald-50 dark:bg-emerald-900/10 p-6 rounded-2xl border border-emerald-100 dark:border-emerald-900/20">
+                <h3 className="font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-2 mb-4">
+                  <CheckCircle2 className="w-5 h-5" /> Contoh yang Aman
+                </h3>
+                <ul className="space-y-3">
+                  {[
+                    "Botol PET, HDPE, PP yang bersih & kering.",
+                    "Plastik rumah tangga tanpa lapisan metal (bagian dalam tidak mengkilap)."
+                  ].map((text, i) => (
+                    <li key={i} className="flex items-start gap-3 text-emerald-700/90 dark:text-emerald-400/90">
+                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 flex-shrink-0"></span>
+                      <span>{text}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -118,46 +119,42 @@ export default function PanduanPage() {
                 Skema Alat
               </h2>
             </div>
-            
-            <div className="grid lg:grid-cols-2 gap-10 items-start">
-              <div className="order-2 lg:order-1">
-                <div className="grid gap-4">
-                  {[
-                    { title: "Reaktor Utama", desc: "Tabung silinder besar tempat plastik dipanaskan." },
-                    { title: "Tutup Reaktor Kerucut", desc: "Penutup berbentuk kerucut dengan lubang keluarnya uap." },
-                    { title: "Klem Pengunci", desc: "Mengunci tutup ke reaktor agar kedap udara." },
-                    { title: "Pipa Penyalur Uap", desc: "Menghubungkan tutup reaktor dengan kondensor." },
-                    { title: "Kondensor", desc: "Pendingin (koil di dalam) yang mengubah uap menjadi minyak cair." },
-                    { title: "Keran/Saluran Minyak", desc: "Ujung kondensor tempat minyak pirolisis keluar." },
-                    { title: "Sumber Pemanas", desc: "Memberikan panas di bawah reaktor utama." },
-                    { title: "Rangka Penyangga", desc: "Struktur yang menopang reaktor dan kondensor." },
-                  ].map((item, i) => (
-                    <div key={i} className="flex gap-4 p-4 rounded-2xl bg-gray-50 dark:bg-gray-800/50 hover:bg-brand-green/5 dark:hover:bg-brand-green/10 transition-colors border border-transparent hover:border-brand-green/20">
-                      <div className="w-8 h-8 rounded-full bg-brand-green text-white flex items-center justify-center font-bold flex-shrink-0">
-                        {i + 1}
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-gray-900 dark:text-white mb-1">{item.title}</h4>
-                        <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{item.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
 
-              <div className="order-1 lg:order-2 w-full lg:sticky lg:top-32">
-                <img 
-                  src="/panduan/skema.webp" 
-                  alt="Skema Alat Pirolisis"
-                  loading="lazy"
-                  decoding="async"
-                  className="w-full h-auto rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                    (e.target as HTMLImageElement).parentElement!.innerHTML += '<div class="w-full aspect-[4/3] bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-200 dark:border-gray-800 flex items-center justify-center"><div class="text-gray-400 text-sm font-medium text-center">Foto<br/><span class="text-xs">(Rasio Rekomendasi: 4:3 atau 16:9)</span></div></div>';
-                  }}
-                />
-              </div>
+            <div className="w-full mb-10">
+              <img 
+                src="/panduan/skema.webp" 
+                alt="Skema Alat Pirolisis"
+                loading="lazy"
+                decoding="async"
+                className="w-full h-auto rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                  (e.target as HTMLImageElement).parentElement!.innerHTML += '<div class="w-full aspect-[21/9] bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-200 dark:border-gray-800 flex items-center justify-center"><div class="text-gray-400 text-sm font-medium text-center">Foto Banner<br/><span class="text-xs">(Rasio Rekomendasi: 1920 x 820 piksel)</span></div></div>';
+                }}
+              />
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-x-8 gap-y-4">
+              {[
+                { title: "Reaktor Utama", desc: "Tabung silinder besar tempat plastik dipanaskan." },
+                { title: "Tutup Reaktor Kerucut", desc: "Penutup berbentuk kerucut dengan lubang keluarnya uap." },
+                { title: "Klem Pengunci", desc: "Mengunci tutup ke reaktor agar kedap udara." },
+                { title: "Pipa Penyalur Uap", desc: "Menghubungkan tutup reaktor dengan kondensor." },
+                { title: "Kondensor", desc: "Pendingin (koil di dalam) yang mengubah uap menjadi minyak cair." },
+                { title: "Keran/Saluran Minyak", desc: "Ujung kondensor tempat minyak pirolisis keluar." },
+                { title: "Sumber Pemanas", desc: "Memberikan panas di bawah reaktor utama." },
+                { title: "Rangka Penyangga", desc: "Struktur yang menopang reaktor dan kondensor." },
+              ].map((item, i) => (
+                <div key={i} className="flex gap-4 p-5 rounded-2xl bg-gray-50 dark:bg-gray-800/50 hover:bg-brand-green/5 dark:hover:bg-brand-green/10 transition-colors border border-transparent hover:border-brand-green/20">
+                  <div className="w-8 h-8 rounded-full bg-brand-green text-white flex items-center justify-center font-bold flex-shrink-0 mt-0.5">
+                    {i + 1}
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-gray-900 dark:text-white mb-1">{item.title}</h4>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </motion.div>
