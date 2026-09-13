@@ -92,19 +92,17 @@ export default function PanduanPage() {
               </div>
             </div>
 
-            <div className="w-full lg:w-1/2">
-              <div className="w-full aspect-video md:aspect-square lg:aspect-[4/3] bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden flex items-center justify-center p-4">
-                 <img 
-                  src="/panduan/penting.webp" 
-                  alt="Larangan plastik metalized"
-                  decoding="async"
-                  className="w-full h-full object-contain drop-shadow-sm"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                    (e.target as HTMLImageElement).parentElement!.innerHTML += '<div class="text-gray-400 text-sm font-medium text-center">Foto<br/><span class="text-xs">(Rasio Rekomendasi: 4:3 atau 1:1)</span></div>';
-                  }}
-                />
-              </div>
+            <div className="w-full lg:w-1/2 lg:sticky lg:top-32">
+               <img 
+                src="/panduan/penting.webp" 
+                alt="Larangan plastik metalized"
+                decoding="async"
+                className="w-full h-auto rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                  (e.target as HTMLImageElement).parentElement!.innerHTML += '<div class="w-full aspect-[4/3] bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-200 dark:border-gray-800 flex items-center justify-center"><div class="text-gray-400 text-sm font-medium text-center">Foto<br/><span class="text-xs">(Rasio Rekomendasi: 4:3 atau 1:1)</span></div></div>';
+                }}
+              />
             </div>
           </div>
         </motion.div>
@@ -121,7 +119,7 @@ export default function PanduanPage() {
               </h2>
             </div>
             
-            <div className="grid lg:grid-cols-2 gap-10 items-center">
+            <div className="grid lg:grid-cols-2 gap-10 items-start">
               <div className="order-2 lg:order-1">
                 <div className="grid gap-4">
                   {[
@@ -147,16 +145,16 @@ export default function PanduanPage() {
                 </div>
               </div>
 
-              <div className="order-1 lg:order-2 w-full aspect-video lg:aspect-[4/3] bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden flex items-center justify-center p-4">
+              <div className="order-1 lg:order-2 w-full lg:sticky lg:top-32">
                 <img 
                   src="/panduan/skema.webp" 
                   alt="Skema Alat Pirolisis"
                   loading="lazy"
                   decoding="async"
-                  className="w-full h-full object-contain drop-shadow-sm"
+                  className="w-full h-auto rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm"
                   onError={(e) => {
                     (e.target as HTMLImageElement).style.display = 'none';
-                    (e.target as HTMLImageElement).parentElement!.innerHTML += '<div class="text-gray-400 text-sm font-medium text-center">Foto<br/><span class="text-xs">(Rasio Rekomendasi: 4:3 atau 16:9)</span></div>';
+                    (e.target as HTMLImageElement).parentElement!.innerHTML += '<div class="w-full aspect-[4/3] bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-200 dark:border-gray-800 flex items-center justify-center"><div class="text-gray-400 text-sm font-medium text-center">Foto<br/><span class="text-xs">(Rasio Rekomendasi: 4:3 atau 16:9)</span></div></div>';
                   }}
                 />
               </div>
@@ -178,16 +176,16 @@ export default function PanduanPage() {
               </h2>
             </div>
             
-            <div className="w-full aspect-[4/3] md:aspect-video lg:aspect-[21/9] bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden flex items-center justify-center p-4 mb-10">
+            <div className="w-full mb-10">
               <img 
                 src="/panduan/aman.webp" 
                 alt="Ilustrasi Cara Pakai Aman"
                 loading="lazy"
                 decoding="async"
-                className="w-full h-full object-contain drop-shadow-sm"
+                className="w-full h-auto rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm"
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = 'none';
-                  (e.target as HTMLImageElement).parentElement!.innerHTML += '<div class="text-gray-400 text-sm font-medium text-center">Foto<br/><span class="text-xs">(Rasio Rekomendasi: 16:9 atau 21:9 Widescreen)</span></div>';
+                  (e.target as HTMLImageElement).parentElement!.innerHTML += '<div class="w-full aspect-[21/9] bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-200 dark:border-gray-800 flex items-center justify-center"><div class="text-gray-400 text-sm font-medium text-center">Foto<br/><span class="text-xs">(Rasio Rekomendasi: 16:9 atau 21:9 Widescreen)</span></div></div>';
                 }}
               />
             </div>
