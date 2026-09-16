@@ -31,7 +31,7 @@ function formatDate(ms: number) {
 export default function NotifikasiPage() {
   const [notifications, setNotifications] = useState<NotificationData[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   const { user, isAdmin, loading: roleLoading } = useRole();
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [selectedLogs, setSelectedLogs] = useState<string[]>([]);
@@ -45,7 +45,7 @@ export default function NotifikasiPage() {
 
   useEffect(() => {
     if (roleLoading || user === undefined) return;
-    
+
     // Fetch up to 50 latest notifications for normal users, but 500 for admins to allow good filtering
     const limit = isAdmin ? 500 : 50;
     const unsubscribe = listenToNotifications(limit, user?.uid, user?.email, !!isAdmin, (data) => {
@@ -74,7 +74,7 @@ export default function NotifikasiPage() {
       default: return "text-brand-sage";
     }
   };
-  
+
   const getNotifStyle = (type: string) => {
     switch (type) {
       case "warning": return "bg-amber-50/80 hover:bg-amber-100/80";
@@ -92,7 +92,7 @@ export default function NotifikasiPage() {
   };
 
   const toggleSelectLog = (id: string) => {
-    setSelectedLogs(prev => 
+    setSelectedLogs(prev =>
       prev.includes(id) ? prev.filter(logId => logId !== id) : [...prev, id]
     );
   };
@@ -136,7 +136,7 @@ export default function NotifikasiPage() {
     if (filterDate !== "all") {
       const now = new Date();
       const notifDate = new Date(notif.timestamp);
-      
+
       if (filterDate === "today") {
         if (notifDate.toDateString() !== now.toDateString()) return false;
       } else if (filterDate === "yesterday") {
@@ -172,20 +172,20 @@ export default function NotifikasiPage() {
             <Bell className="w-5 h-5" />
             Daftar Notifikasi
           </h2>
-          
+
           {isAdmin && (
             <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-              <button 
+              <button
                 onClick={() => setShowFilters(!showFilters)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-colors text-sm shadow-sm justify-center ${showFilters ? 'bg-brand-green text-white' : 'bg-input-bg hover:bg-input-border text-brand-sage'}`}
               >
                 <Filter className="w-4 h-4" />
                 {showFilters ? 'Sembunyikan Filter' : 'Tampilkan Filter'}
               </button>
-              
+
               {isSelectionMode ? (
                 <>
-                  <button 
+                  <button
                     onClick={() => {
                       setIsSelectionMode(false);
                       setSelectedLogs([]);
@@ -195,7 +195,7 @@ export default function NotifikasiPage() {
                     Batal
                   </button>
                   {selectedLogs.length > 0 && (
-                    <button 
+                    <button
                       onClick={handleDeleteSelected}
                       disabled={isDeleting}
                       className="flex items-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 px-5 py-2 rounded-xl font-medium transition-colors text-sm shadow-sm justify-center disabled:opacity-70"
@@ -206,7 +206,7 @@ export default function NotifikasiPage() {
                   )}
                 </>
               ) : (
-                <button 
+                <button
                   onClick={() => setIsSelectionMode(true)}
                   className="flex items-center gap-2 bg-input-bg hover:bg-input-border text-brand-sage px-4 py-2 rounded-xl font-medium transition-colors text-sm shadow-sm justify-center"
                 >
@@ -224,9 +224,9 @@ export default function NotifikasiPage() {
               <label className="block text-xs font-semibold text-brand-sage mb-2 uppercase tracking-wider">Cari Akun / Aktivitas</label>
               <div className="relative">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-brand-sage" />
-                <input 
-                  type="text" 
-                  placeholder="Ketik email akun, jenis aktivitas..." 
+                <input
+                  type="text"
+                  placeholder="Ketik email akun, jenis aktivitas..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-input-bg border border-input-border focus:border-brand-green rounded-xl pl-10 pr-4 py-2.5 text-sm text-foreground outline-none transition-all placeholder:text-muted-foreground"
@@ -236,16 +236,16 @@ export default function NotifikasiPage() {
             <div className="w-full md:w-56 shrink-0">
               <label className="block text-xs font-semibold text-brand-sage mb-2 uppercase tracking-wider">Jenis Log</label>
               <div className="relative">
-                <select 
+                <select
                   value={filterType}
                   onChange={(e) => setFilterType(e.target.value)}
                   className="w-full bg-input-bg border border-input-border focus:border-brand-green rounded-xl px-4 py-2.5 text-sm text-foreground outline-none transition-all appearance-none cursor-pointer"
                 >
                   <option value="all">Semua Jenis Log</option>
-                  <option value="info">Info / Aktivitas (Biru)</option>
-                  <option value="success">Sukses / Selesai (Hijau)</option>
-                  <option value="warning">Peringatan / Warning (Kuning)</option>
-                  <option value="critical">Kritis / Critical (Merah)</option>
+                  <option value="info">Info / Aktivitas</option>
+                  <option value="success">Sukses / Selesai</option>
+                  <option value="warning">Peringatan / Warning</option>
+                  <option value="critical">Kritis / Critical</option>
                 </select>
                 <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
                   <svg className="w-4 h-4 text-brand-sage" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
@@ -255,7 +255,7 @@ export default function NotifikasiPage() {
             <div className="w-full md:w-56 shrink-0">
               <label className="block text-xs font-semibold text-brand-sage mb-2 uppercase tracking-wider">Filter Waktu</label>
               <div className="relative">
-                <select 
+                <select
                   value={filterDate}
                   onChange={(e) => setFilterDate(e.target.value)}
                   className="w-full bg-input-bg border border-input-border focus:border-brand-green rounded-xl px-4 py-2.5 text-sm text-foreground outline-none transition-all appearance-none cursor-pointer"
@@ -276,8 +276,8 @@ export default function NotifikasiPage() {
 
         {isAdmin && isSelectionMode && filteredNotifications.length > 0 && (
           <div className="px-6 py-3 border-b border-card-border bg-brand-green50/30 flex items-center gap-3">
-            <input 
-              type="checkbox" 
+            <input
+              type="checkbox"
               onChange={handleSelectAll}
               checked={selectedLogs.length > 0 && selectedLogs.length === filteredNotifications.length}
               className="rounded border-input-border text-brand-green focus:ring-brand-green/20 w-4 h-4"
@@ -293,8 +293,8 @@ export default function NotifikasiPage() {
             </div>
           ) : filteredNotifications.length > 0 ? (
             filteredNotifications.map((notif) => (
-              <div 
-                key={notif.id} 
+              <div
+                key={notif.id}
                 onClick={() => {
                   if (isSelectionMode) {
                     toggleSelectLog(notif.id!);
@@ -306,8 +306,8 @@ export default function NotifikasiPage() {
               >
                 {isAdmin && isSelectionMode && (
                   <div className="shrink-0 mt-1">
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       checked={selectedLogs.includes(notif.id!)}
                       onChange={() => toggleSelectLog(notif.id!)}
                       onClick={(e) => e.stopPropagation()}
@@ -344,7 +344,7 @@ export default function NotifikasiPage() {
               <h3 className="font-bold text-lg text-brand-green700 mb-1">Pencarian Tidak Ditemukan</h3>
               <p className="text-sm text-brand-sage">Coba sesuaikan filter atau kata kunci pencarian Anda.</p>
               {(filterType !== 'all' || filterDate !== 'all' || searchQuery !== '') && (
-                <button 
+                <button
                   onClick={() => {
                     setFilterType('all');
                     setFilterDate('all');
