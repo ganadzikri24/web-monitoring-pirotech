@@ -190,10 +190,14 @@ export default function PanduanPage() {
             <div className="grid md:grid-cols-2 gap-x-12 gap-y-8 mb-10">
               {[
                 { title: "Sortir & Bersihkan", desc: "Pilah plastik dan pastikan dalam keadaan kering sebelum diproses." },
+                { title: "Timbang & Estimasi", desc: "Timbang sampah dan gunakan kalkulator web/aplikasi untuk cek perkiraan hasil BBM." },
                 { title: "Masukkan Plastik", desc: "Isi reaktor dengan plastik sampai pada batas aman yang ditentukan." },
                 { title: "Tutup & Kunci", desc: "Pasang tutup reaktor dan pastikan semua sambungan terkunci rapat." },
                 { title: "Siapkan Penampung", desc: "Letakkan wadah penampung minyak di ujung saluran kondensor." },
-                { title: "Panaskan Bertahap", desc: "Nyalakan pemanas dan amati alat ukur lokal jika tersedia." },
+                { title: "Pasang Sensor IoT", desc: "Sambungkan kabel sensor dari reaktor ke alat IoT untuk pemantauan presisi." },
+                { title: "Nyalakan Sistem", desc: "Mulai nyalakan reaktor, alat IoT akan otomatis menyala dan memantau sistem." },
+                { title: "Panaskan Bertahap", desc: "Naikkan suhu pemanas secara perlahan menuju titik optimal (100-200°C)." },
+                { title: "Pantau Real-time", desc: "Awasi grafik suhu dan status reaktor secara langsung melalui dashboard web/aplikasi." },
                 { title: "Selesai & Bersihkan", desc: "Matikan pemanas, biarkan alat mendingin, lalu buka dan bersihkan residu." },
               ].map((step, i) => (
                 <div key={i} className="flex gap-4">

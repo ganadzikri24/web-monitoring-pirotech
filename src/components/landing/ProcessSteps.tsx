@@ -7,44 +7,72 @@ const STEPS = [
     step: 1,
     title: "Sortir & Bersihkan",
     desc: "Pilah sampah plastik sesuai jenis (PET, HDPE, PP, dll.). Bersihkan dari sisa makanan atau kotoran, lalu keringkan. Hindari plastik berlapis aluminium.",
-    // TODO: ganti foto tahap Sortir & Bersihkan
+    // TODO: ganti foto tahap Sortir & Bersihkan (Keterangan Gambar: Orang sedang memilah sampah plastik atau tumpukan botol plastik yang sudah bersih)
     image: "/steps/step-sortir.webp",
   },
   {
     step: 2,
-    title: "Masukkan ke Reaktor",
-    desc: "Masukkan plastik yang sudah bersih dan kering ke dalam reaktor utama hingga batas aman kapasitas. Jangan melebihi kapasitas maksimal.",
-    // TODO: ganti foto tahap Masukkan ke Reaktor
-    image: "/steps/step-masukkan.webp",
+    title: "Timbang & Estimasi Hasil",
+    desc: "Timbang berat sampah plastik yang disortir. Gunakan kalkulator di web/aplikasi untuk melihat perkiraan hasil BBM yang akan didapat sesuai jenis sampahnya.",
+    // TODO: ganti foto tahap Timbang & Estimasi (Keterangan Gambar: Timbangan digital dengan sampah plastik di atasnya, atau ilustrasi layar HP/Laptop menampilkan kalkulator BBM)
+    image: "/steps/step-timbang.webp",
   },
   {
     step: 3,
-    title: "Tutup & Kunci Reaktor",
-    desc: "Pasang tutup kerucut dan kunci dengan klem pengunci hingga kedap udara. Pastikan semua sambungan pipa rapat dan tidak bocor.",
-    // TODO: ganti foto tahap Tutup & Kunci
-    image: "/steps/step-tutup.webp",
+    title: "Masukkan ke Reaktor",
+    desc: "Masukkan plastik yang sudah bersih dan kering ke dalam reaktor utama hingga batas aman kapasitas. Jangan melebihi kapasitas maksimal.",
+    // TODO: ganti foto tahap Masukkan ke Reaktor (Keterangan Gambar: Tangan atau orang yang sedang memasukkan cacahan plastik ke dalam tabung reaktor logam)
+    image: "/steps/step-masukkan.webp",
   },
   {
     step: 4,
-    title: "Panaskan Bertahap",
-    desc: "Nyalakan sumber pemanas (kompor) dan naikkan suhu secara bertahap. Proses pirolisis optimal terjadi pada suhu 100–200°C tanpa oksigen.",
-    // TODO: ganti foto tahap Panaskan
-    image: "/steps/step-panaskan.webp",
+    title: "Tutup & Kunci Reaktor",
+    desc: "Pasang tutup kerucut dan kunci dengan klem pengunci hingga kedap udara. Pastikan semua sambungan pipa rapat dan tidak bocor.",
+    // TODO: ganti foto tahap Tutup & Kunci (Keterangan Gambar: Tangan sedang mengencangkan klem baja pada penutup atas reaktor)
+    image: "/steps/step-tutup.webp",
   },
   {
     step: 5,
-    title: "Kondensasi Uap",
-    desc: "Uap yang dihasilkan mengalir melalui pipa ke kondensor, di mana uap didinginkan dan berubah menjadi cairan bahan bakar (minyak pirolisis).",
-    // TODO: ganti foto tahap Kondensasi
-    image: "/steps/step-kondensasi.webp",
+    title: "Pasang Sensor IoT",
+    desc: "Sambungkan kabel sensor suhu dari reaktor secara presisi ke perangkat IoT pintar PiRoTech untuk menjamin pembacaan data yang akurat.",
+    // TODO: ganti foto tahap Pasang Sensor IoT (Keterangan Gambar: Tangan yang sedang mencolokkan atau menghubungkan kabel sensor ke kotak panel IoT)
+    image: "/steps/step-pasang-iot.webp",
   },
   {
     step: 6,
+    title: "Nyalakan Reaktor & Alat IoT",
+    desc: "Mulai nyalakan pemanas reaktor. Perangkat IoT monitoring akan otomatis menyala, melakukan inisiasi, dan bersiap membaca suhu secara langsung.",
+    // TODO: ganti foto tahap Nyalakan Reaktor (Keterangan Gambar: Alat IoT dengan lampu indikator menyala terang di samping reaktor yang bersiap beroperasi)
+    image: "/steps/step-nyalakan-reaktor.webp",
+  },
+  {
+    step: 7,
+    title: "Panaskan Bertahap",
+    desc: "Nyalakan sumber pemanas (kompor) dan naikkan suhu secara bertahap. Proses pirolisis optimal terjadi pada suhu 100–200°C tanpa oksigen.",
+    // TODO: ganti foto tahap Panaskan (Keterangan Gambar: Api kompor atau pemanas yang menyala biru/merah di bagian bawah reaktor)
+    image: "/steps/step-panaskan.webp",
+  },
+  {
+    step: 8,
+    title: "Pantau Real-time",
+    desc: "Awasi grafik suhu dan status reaktor secara real-time melalui dashboard di web atau aplikasi. Sangat mudah memastikan proses tetap berada pada suhu ideal.",
+    // TODO: ganti foto tahap Pantau (Keterangan Gambar: Tampilan layar smartphone atau laptop yang menunjukkan grafik garis suhu dan dashboard monitoring yang modern)
+    image: "/steps/step-monitoring.webp",
+  },
+  {
+    step: 9,
+    title: "Kondensasi Uap",
+    desc: "Uap yang dihasilkan mengalir melalui pipa ke kondensor, di mana uap didinginkan dan berubah menjadi cairan bahan bakar (minyak pirolisis).",
+    // TODO: ganti foto tahap Kondensasi (Keterangan Gambar: Pipa spiral atau kondensor logam di mana uap panas sedang didinginkan)
+    image: "/steps/step-kondensasi.webp",
+  },
+  {
+    step: 10,
     title: "Tampung Hasil BBM",
     desc: "Minyak pirolisis cair keluar dari ujung kondensor dan ditampung di wadah. Hasilnya adalah bahan bakar cair setara solar yang siap digunakan.",
-    // TODO: ganti foto tahap Tampung Hasil
+    // TODO: ganti foto tahap Tampung Hasil (Keterangan Gambar: Tetesan minyak berwarna gelap kekuningan yang mengalir dari pipa ke dalam wadah kaca atau jerigen)
     image: "/steps/step-hasil.webp",
-  },
+  }
 ];
 
 export default function ProcessSteps() {
