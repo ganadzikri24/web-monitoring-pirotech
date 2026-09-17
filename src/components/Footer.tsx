@@ -74,7 +74,7 @@ export default function Footer() {
             </h4>
             <div className="space-y-3">
               <p className="text-sm text-brand-sage leading-relaxed">
-                Dikembangkan oleh tim mahasiswa Sekolah Vokasi IPB sebagai solusi pengolahan sampah plastik berkelanjutan.
+                Dikembangkan oleh tim dosen dan mahasiswa Teknologi Rekayasa Komputer Sekolah Vokasi IPB University sebagai solusi pengolahan sampah plastik berkelanjutan.
               </p>
               <a
                 href="https://sv.ipb.ac.id"
