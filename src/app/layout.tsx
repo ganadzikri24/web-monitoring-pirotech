@@ -11,7 +11,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "PiRoTech — Monitoring Alat Pirolisis Plastik",
+  title: "PiRoTech (Plastic Pyrolisis Technology)",
   description:
     "Pemantauan dan pengendalian proses pirolisis plastik menjadi bahan bakar cair secara real-time berbasis IoT. Dikembangkan oleh Sekolah Vokasi IPB.",
   keywords: ["pirolisis", "plastik", "bahan bakar cair", "IoT", "monitoring", "PiRoTech", "IPB"],
