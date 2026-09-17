@@ -78,8 +78,7 @@ export default function Home() {
             </h1>
 
             <p className="text-lg text-brand-sage max-w-xl mx-auto lg:mx-0 leading-relaxed">
-              Alat pirolisis inovatif yang mengubah limbah plastik menjadi BBM
-              setara solar dikembangkan oleh tim Sekolah Vokasi IPB.
+              Alat pirolisis inovatif berbasis Internet of Things (IoT) yang mampu mengubah limbah plastik menjadi BBM setara bensin, dikembangkan oleh Program Studi Teknologi Rekayasa Komputer Sekolah Vokasi IPB University yang didukung oleh Program Pengabdian Masyarakat Terpadu Sekolah Vokasi IPB University di Kelurahan Mulyaharja periode 2025-2026.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
