@@ -136,9 +136,7 @@ export default function Home() {
               Apa itu PiRoTech?
             </h2>
             <p className="text-brand-sage leading-relaxed">
-              <strong className="text-brand-green700">PiRoTech</strong> adalah
-              alat pengolah sampah plastik menjadi bahan bakar cair menggunakan
-              teknologi{" "}
+              <strong className="text-brand-green700">PiRoTech</strong> (Plastic Pyrolisis Technology) adalah alat pengolah sampah plastik menjadi bahan bakar cair berbasis IoT menggunakan teknologi{" "}
               <strong className="text-brand-green700">pirolisis</strong> proses dekomposisi termal plastik tanpa oksigen pada suhu
               (100–200°C).
             </p>
