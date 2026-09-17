@@ -27,7 +27,7 @@ const STEPS = [
   {
     step: 4,
     title: "Panaskan Bertahap",
-    desc: "Nyalakan sumber pemanas (kompor) dan naikkan suhu secara bertahap. Proses pirolisis optimal terjadi pada suhu 300–450°C tanpa oksigen.",
+    desc: "Nyalakan sumber pemanas (kompor) dan naikkan suhu secara bertahap. Proses pirolisis optimal terjadi pada suhu 100–200°C tanpa oksigen.",
     // TODO: ganti foto tahap Panaskan
     image: "/steps/step-panaskan.webp",
   },
@@ -78,9 +78,9 @@ export default function ProcessSteps() {
                   <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-card-bg border border-card-border shadow-sm group">
                     {/* TODO: ganti dengan foto asli tahap ini */}
                     <div className="absolute inset-0 bg-gradient-to-br from-brand-green50 via-brand-sage50/50 to-card-bg flex items-center justify-center">
-                      <img 
-                        src={step.image} 
-                        alt={step.title} 
+                      <img
+                        src={step.image}
+                        alt={step.title}
                         className="absolute inset-0 w-full h-full object-cover z-10"
                       />
                     </div>
