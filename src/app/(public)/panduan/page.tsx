@@ -47,7 +47,7 @@ export default function PanduanPage() {
 
           <div className="w-full mb-10">
              <img 
-              src="/panduan/penting.webp" 
+              src="/panduan/penting-v2.webp" 
               alt="Larangan plastik metalized"
               decoding="async"
               className="w-full h-auto rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm"
@@ -122,7 +122,7 @@ export default function PanduanPage() {
 
             <div className="w-full mb-10">
               <img 
-                src="/panduan/skema.webp" 
+                src="/panduan/skema-v2.webp" 
                 alt="Skema Alat Pirolisis"
                 loading="lazy"
                 decoding="async"
@@ -175,7 +175,7 @@ export default function PanduanPage() {
             
             <div className="w-full mb-10">
               <img 
-                src="/panduan/aman.webp" 
+                src="/panduan/aman-v2.webp" 
                 alt="Ilustrasi Cara Pakai Aman"
                 loading="lazy"
                 decoding="async"
