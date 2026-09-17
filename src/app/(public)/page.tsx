@@ -139,20 +139,19 @@ export default function Home() {
               <strong className="text-brand-green700">PiRoTech</strong> adalah
               alat pengolah sampah plastik menjadi bahan bakar cair menggunakan
               teknologi{" "}
-              <strong className="text-brand-green700">pirolisis</strong> — proses
-              dekomposisi termal plastik tanpa oksigen pada suhu tinggi
-              (300–450°C).
+              <strong className="text-brand-green700">pirolisis</strong> proses dekomposisi termal plastik tanpa oksigen pada suhu
+              (100–200°C).
             </p>
             <p className="text-brand-sage leading-relaxed">
               Indonesia menghasilkan jutaan ton sampah plastik setiap tahun,
               sebagian besar berakhir di TPA atau lautan. PiRoTech hadir sebagai
               solusi: mengubah sampah plastik menjadi bahan bakar cair setara
-              solar yang bernilai ekonomis.
+              bensin yang bernilai ekonomis.
             </p>
             <p className="text-brand-sage leading-relaxed">
-              Dikembangkan oleh tim mahasiswa{" "}
+              Dikembangkan oleh tim dosen dan mahasiswa{" "}
               <strong className="text-brand-green700">
-                Sekolah Vokasi IPB
+                Program Studi Teknologi Rekayasa Komputer Sekolah Vokasi IPB University
               </strong>
               , alat ini dirancang untuk skala komunitas dengan biaya terjangkau
               dan mudah dioperasikan.
